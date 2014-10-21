@@ -7,17 +7,23 @@ import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
+
+import com.fizix.easyweather.utils.GetAutocompleteTask;
 
 public class AddCityActivity extends ActionBarActivity implements SearchView.OnQueryTextListener {
 
     private static final String LOG_TAG = AddCityActivity.class.getSimpleName();
 
     private SearchView mSearchView;
+    private ListView mCityList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_city);
+
+        mCityList = (ListView) findViewById(R.id.city_list);
     }
 
     @Override
@@ -41,6 +47,10 @@ public class AddCityActivity extends ActionBarActivity implements SearchView.OnQ
     @Override
     public boolean onQueryTextSubmit(String s) {
         Log.d(LOG_TAG, "Submitting: " + s);
+
+        GetAutocompleteTask task = new GetAutocompleteTask(s, this, mCityList);
+        task.execute();
+
         return false;
     }
 
