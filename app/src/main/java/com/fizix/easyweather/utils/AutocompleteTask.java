@@ -21,15 +21,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Vector;
 
-public class GetAutocompleteTask extends AsyncTask<Void, Void, Vector<ContentValues>> {
+public class AutocompleteTask extends AsyncTask<Void, Void, Vector<ContentValues>> {
 
-    private static final String LOG_TAG = GetAutocompleteTask.class.getSimpleName();
+    private static final String LOG_TAG = AutocompleteTask.class.getSimpleName();
 
     private String mCity;
     private Context mContext;
     private ListView mCityList;
 
-    public GetAutocompleteTask(String city, Context context, ListView cityList) {
+    public AutocompleteTask(String city, Context context, ListView cityList) {
         super();
 
         mCity = city;
