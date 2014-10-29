@@ -1,4 +1,4 @@
-package com.fizix.easyweather.utils;
+package com.fizix.android.easyweather.utils;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -19,22 +19,26 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Vector;
 
-public class AutocompleteTask extends AsyncTask<Void, Void, Vector<ContentValues>> {
+public class AutoCompleteTask extends AsyncTask<Void, Void, Vector<ContentValues>> {
 
-    private static final String LOG_TAG = AutocompleteTask.class.getSimpleName();
+    private static final String LOG_TAG = AutoCompleteTask.class.getSimpleName();
 
     private String mCity;
-    private Context mContext;
-    private ListView mCityList;
 
-    public AutocompleteTask(String city, Context context, ListView cityList) {
+    public interface Callbacks {
+        void onTaskComplete(ArrayList<String> cities);
+    }
+
+    private Callbacks mCallbacks;
+
+    public AutoCompleteTask(Callbacks callbacks, String city) {
         super();
 
+        mCallbacks = callbacks;
         mCity = city;
-        mContext = context;
-        mCityList = cityList;
     }
 
     @Override
@@ -128,21 +132,15 @@ public class AutocompleteTask extends AsyncTask<Void, Void, Vector<ContentValues
     protected void onPostExecute(Vector<ContentValues> cities) {
         super.onPostExecute(cities);
 
-        if (cities == null)
-            return;
-
-        Log.d(LOG_TAG, String.format("Cities found: %d", cities.size()));
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1);
+        ArrayList<String> results = new ArrayList<String>();
 
         if (cities != null) {
-            for (ContentValues cityValues : cities) {
-                Log.d(LOG_TAG, "City: " + cityValues.getAsString("name"));
-                adapter.add(cityValues.getAsString("name"));
+            for (ContentValues values : cities) {
+                results.add(values.getAsString("name"));
             }
         }
 
-        mCityList.setAdapter(adapter);
+        mCallbacks.onTaskComplete(results);
     }
 
 }
