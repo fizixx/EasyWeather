@@ -3,6 +3,7 @@ package com.fizix.android.easyweather;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,6 +43,11 @@ public class MainActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+
+        if (id == R.id.action_add_city) {
+            startActivity(new Intent(this, AddCityActivity.class));
             return true;
         }
 
