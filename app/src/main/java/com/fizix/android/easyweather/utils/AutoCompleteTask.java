@@ -1,12 +1,11 @@
 package com.fizix.android.easyweather.utils;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+
+import com.fizix.android.easyweather.models.SearchResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,16 +19,17 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
-public class AutoCompleteTask extends AsyncTask<Void, Void, Vector<ContentValues>> {
+public class AutoCompleteTask extends AsyncTask<Void, Void, List<SearchResult>> {
 
     private static final String LOG_TAG = AutoCompleteTask.class.getSimpleName();
 
     private String mCity;
 
     public interface Callbacks {
-        void onTaskComplete(ArrayList<String> cities);
+        void onTaskComplete(List<SearchResult> results);
     }
 
     private Callbacks mCallbacks;
@@ -42,7 +42,7 @@ public class AutoCompleteTask extends AsyncTask<Void, Void, Vector<ContentValues
     }
 
     @Override
-    protected Vector<ContentValues> doInBackground(Void... voids) {
+    protected List<SearchResult> doInBackground(Void... voids) {
         HttpURLConnection urlConnection = null;
         BufferedReader reader;
         String jsonString = null;
@@ -100,24 +100,25 @@ public class AutoCompleteTask extends AsyncTask<Void, Void, Vector<ContentValues
             }
         }
 
-        Vector<ContentValues> citiesVector = null;
+        List<SearchResult> results = null;
 
         try {
             JSONObject root = new JSONObject(jsonString);
 
             JSONArray cities = root.getJSONArray("RESULTS");
 
-            citiesVector = new Vector<ContentValues>(cities.length());
+            results = new ArrayList<SearchResult>(cities.length());
 
             for (int i = 0; i < cities.length(); i++) {
                 JSONObject cityObj = cities.getJSONObject(i);
 
-                ContentValues cityValues = new ContentValues();
-                cityValues.put("name", cityObj.getString("name"));
-                cityValues.put("lat", cityObj.getDouble("lat"));
-                cityValues.put("lon", cityObj.getDouble("lon"));
+                SearchResult result = new SearchResult(
+                        cityObj.getString("name"),
+                        cityObj.getString("c"),
+                        cityObj.getDouble("lat"),
+                        cityObj.getDouble("lon"));
 
-                citiesVector.add(cityValues);
+                results.add(result);
             }
 
         } catch (JSONException e) {
@@ -125,20 +126,12 @@ public class AutoCompleteTask extends AsyncTask<Void, Void, Vector<ContentValues
             e.printStackTrace();
         }
 
-        return citiesVector;
+        return results;
     }
 
     @Override
-    protected void onPostExecute(Vector<ContentValues> cities) {
-        super.onPostExecute(cities);
-
-        ArrayList<String> results = new ArrayList<String>();
-
-        if (cities != null) {
-            for (ContentValues values : cities) {
-                results.add(values.getAsString("name"));
-            }
-        }
+    protected void onPostExecute(List<SearchResult> results) {
+        super.onPostExecute(results);
 
         mCallbacks.onTaskComplete(results);
     }

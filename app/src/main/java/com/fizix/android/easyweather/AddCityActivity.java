@@ -12,9 +12,12 @@ import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.fizix.android.easyweather.adapters.SearchResultAdapter;
+import com.fizix.android.easyweather.models.SearchResult;
 import com.fizix.android.easyweather.utils.AutoCompleteTask;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AddCityActivity extends Activity implements SearchView.OnQueryTextListener, AutoCompleteTask.Callbacks {
 
@@ -91,18 +94,14 @@ public class AddCityActivity extends Activity implements SearchView.OnQueryTextL
     }
 
     @Override
-    public void onTaskComplete(ArrayList<String> cities) {
+    public void onTaskComplete(List<SearchResult> results) {
         // Show the no cities found text view if nothing was found and hide the city list.
-        if (cities.isEmpty()) {
+        if (results.isEmpty()) {
             mNoCitiesFound.setVisibility(View.VISIBLE);
         }
 
         // Create a new adapter for the list.
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                android.R.id.text1,
-                cities);
+        SearchResultAdapter adapter = new SearchResultAdapter(this, results);
 
         mCityList.setAdapter(adapter);
 
