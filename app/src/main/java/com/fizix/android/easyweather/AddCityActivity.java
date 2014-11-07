@@ -1,25 +1,24 @@
 package com.fizix.android.easyweather;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.fizix.android.easyweather.adapters.SearchResultAdapter;
 import com.fizix.android.easyweather.models.SearchResult;
 import com.fizix.android.easyweather.utils.AutoCompleteTask;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class AddCityActivity extends Activity implements SearchView.OnQueryTextListener, AutoCompleteTask.Callbacks {
+public class AddCityActivity extends ActionBarActivity implements SearchView.OnQueryTextListener, AutoCompleteTask.Callbacks {
 
     private static final String LOG_TAG = AddCityActivity.class.getSimpleName();
 
@@ -52,15 +51,13 @@ public class AddCityActivity extends Activity implements SearchView.OnQueryTextL
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-
         getMenuInflater().inflate(R.menu.menu_add_city, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
 
-        mSearchView = (SearchView) searchItem.getActionView();
+        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         mSearchView.setOnQueryTextListener(this);
 
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
