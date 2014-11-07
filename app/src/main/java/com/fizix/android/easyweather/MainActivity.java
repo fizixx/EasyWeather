@@ -1,9 +1,9 @@
 package com.fizix.android.easyweather;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,20 +11,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.fizix.android.easyweather.adapters.LocationTabsAdapter;
+
 
 public class MainActivity extends ActionBarActivity {
+
+    ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
-                    .commit();
-        }
-    }
 
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        LocationTabsAdapter adapter = new LocationTabsAdapter(this);
+        mViewPager.setAdapter(adapter);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -54,8 +56,6 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public static class PlaceholderFragment extends Fragment {
-
-        //ViewPager mViewPager;
 
         public PlaceholderFragment() {
         }
