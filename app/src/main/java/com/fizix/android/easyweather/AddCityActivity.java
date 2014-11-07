@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +35,11 @@ public class AddCityActivity extends ActionBarActivity implements SearchView.OnQ
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_city);
+
+        // Set up the action bar.
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //toolbar.setOnMenuItemClickListener(this);
+        setSupportActionBar(toolbar);
 
         mCityList = (ListView) findViewById(R.id.city_list);
 

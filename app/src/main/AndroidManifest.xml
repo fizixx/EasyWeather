@@ -20,7 +20,15 @@
         </activity>
         <activity
             android:name="com.fizix.android.easyweather.AddCityActivity"
-            android:label="@string/add_city" />
+            android:label="@string/add_city"
+            android:parentActivityName="com.fizix.android.easyweather.MainActivity">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.fizix.android.easyweather.MainAtivity" />
+
+        </activity>
 
         <provider
             android:name=".data.Provider"

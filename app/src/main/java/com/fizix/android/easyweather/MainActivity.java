@@ -2,21 +2,24 @@ package com.fizix.android.easyweather;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.fizix.android.easyweather.adapters.LocationTabsAdapter;
+import com.fizix.android.easyweather.views.SlidingTabLayout;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements Toolbar.OnMenuItemClickListener {
 
-    ViewPager mViewPager;
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+
+    private SlidingTabLayout mSlidingTabs;
+    private ViewPager mViewPager;
+
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +27,16 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        LocationTabsAdapter adapter = new LocationTabsAdapter(this);
-        mViewPager.setAdapter(adapter);
+        mViewPager.setAdapter(new LocationTabsAdapter(this));
+
+        mSlidingTabs = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
+        mSlidingTabs.setViewPager(mViewPager);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        mToolbar.setOnMenuItemClickListener(this);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.ic_launcher);
     }
 
     @Override
@@ -36,35 +47,16 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        int id = menuItem.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_add_city:
+                startActivity(new Intent(this, AddCityActivity.class));
+                return true;
         }
 
-        if (id == R.id.action_add_city) {
-            startActivity(new Intent(this, AddCityActivity.class));
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
-    }
 }
