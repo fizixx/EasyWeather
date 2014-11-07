@@ -21,6 +21,13 @@
         <activity
             android:name="com.fizix.android.easyweather.AddCityActivity"
             android:label="@string/add_city" />
+
+        <provider
+            android:name=".data.Provider"
+            android:authorities="com.fizix.android.easyweather"
+            android:exported="false"
+            android:syncable="true" />
+
     </application>
 
 </manifest>

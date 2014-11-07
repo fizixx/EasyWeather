@@ -3,15 +3,11 @@ package com.fizix.android.easyweather;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.test.AndroidTestCase;
 
 import com.fizix.android.easyweather.data.Contract;
 import com.fizix.android.easyweather.data.DbHelper;
 
-import java.util.Map;
-import java.util.Set;
-
-public class DbHelperTest extends AndroidTestCase {
+public class DbHelperTest extends TestBase {
 
     public void testCreateDb() throws Throwable {
         mContext.deleteDatabase(DbHelper.DATABASE_NAME);
@@ -43,15 +39,6 @@ public class DbHelperTest extends AndroidTestCase {
         }
     }
 
-    static private void validateCursor(Cursor cursor, ContentValues contentValues) {
-        Set<Map.Entry<String, Object>> valueSet = contentValues.valueSet();
-        for (Map.Entry<String, Object> entry : valueSet) {
-            String columnName = entry.getKey();
-            int index = cursor.getColumnIndex(columnName);
-            assertTrue(index != -1);
-            String value = entry.getValue().toString();
-            assertEquals(value, cursor.getString(index));
-        }
-    }
+
 
 }

@@ -13,7 +13,7 @@ public class Provider extends ContentProvider {
 
     private static final int LOCATION = 200;
     private static final int LOCATION_ID = 201;
-    private static final UriMatcher sUriMatcher = buildUriMatcher();
+
     private DbHelper mDbHelper;
 
     private static UriMatcher buildUriMatcher() {
@@ -25,6 +25,8 @@ public class Provider extends ContentProvider {
 
         return matcher;
     }
+
+    private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     @Override
     public boolean onCreate() {
