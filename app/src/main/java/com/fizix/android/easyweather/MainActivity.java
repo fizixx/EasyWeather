@@ -13,7 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
 
 import com.fizix.android.easyweather.adapters.LocationTabsAdapter;
 import com.fizix.android.easyweather.data.Contract;
@@ -28,7 +28,7 @@ public class MainActivity extends ActionBarActivity implements Toolbar.OnMenuIte
     private SlidingTabLayout mSlidingTabs;
     private ViewPager mViewPager;
     private Toolbar mToolbar;
-    private TextView mTapToAddLocation;
+    private Button mAddLocationButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +37,14 @@ public class MainActivity extends ActionBarActivity implements Toolbar.OnMenuIte
 
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mSlidingTabs = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
-        mTapToAddLocation = (TextView) findViewById(R.id.tap_to_add_location);
-        mTapToAddLocation.setVisibility(View.GONE);
+        mAddLocationButton = (Button) findViewById(R.id.add_location_button);
+        mAddLocationButton.setVisibility(View.GONE);
+        mAddLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, AddCityActivity.class));
+            }
+        });
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -92,23 +98,23 @@ public class MainActivity extends ActionBarActivity implements Toolbar.OnMenuIte
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         Log.i(LOG_TAG, "onLoadFinished(...)");
 
-        LocationTabsAdapter adapter = new LocationTabsAdapter(this);
+        LocationTabsAdapter adapter = null;
         if (cursor != null && cursor.moveToFirst()) {
+            adapter = new LocationTabsAdapter(this);
             do {
                 LocationInfo locationInfo = new LocationInfo(cursor);
                 Log.i(LOG_TAG, "LocationInfo: " + locationInfo.getCityName());
                 adapter.addLocationInfo(locationInfo);
             } while (cursor.moveToNext());
-
-            mViewPager.setAdapter(adapter);
-            mViewPager.setVisibility(View.VISIBLE);
-            mSlidingTabs.setViewPager(mViewPager);
-            mTapToAddLocation.setVisibility(View.GONE);
-        } else {
-            // We don't have any cities.
-            mViewPager.setVisibility(View.GONE);
-            mTapToAddLocation.setVisibility(View.VISIBLE);
         }
+
+        mViewPager.setAdapter(adapter);
+        mViewPager.setVisibility((adapter == null) ? View.GONE : View.VISIBLE);
+
+        // We have to call this for the sliding tabs to update.
+        mSlidingTabs.setViewPager(mViewPager);
+
+        mAddLocationButton.setVisibility((adapter == null) ? View.VISIBLE : View.GONE);
     }
 
     @Override

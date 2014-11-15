@@ -3,11 +3,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary" />
+    <include layout="@layout/toolbar" />
 
     <com.fizix.android.easyweather.views.SlidingTabLayout
         android:id="@+id/sliding_tabs"
@@ -15,18 +11,19 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary" />
 
+
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <TextView
-        android:id="@+id/tap_to_add_location"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/add_location_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="48dp"
-        android:gravity="center"
-        android:text="@string/tap_to_add_location" />
+        android:text="@string/add_location" />
 
 </LinearLayout>
