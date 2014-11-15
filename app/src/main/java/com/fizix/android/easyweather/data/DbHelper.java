@@ -24,7 +24,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 Contract.Location.COL_CITY_NAME + " TEXT UNIQUE NOT NULL, " +
                 Contract.Location.COL_COORD_LAT + " REAL NOT NULL, " +
                 Contract.Location.COL_COORD_LONG + " REAL NOT NULL, " +
-                "UNIQUE (" + Contract.Location.COL_CITY_NAME + ") ON CONFLICT IGNORE);";
+                "UNIQUE (" + Contract.Location.COL_CITY_NAME + ") ON CONFLICT REPLACE);";
 
         Log.i(LOG_TAG, "Creating locations table: " + SQL_CREATE_LOCATION_TABLE);
 
