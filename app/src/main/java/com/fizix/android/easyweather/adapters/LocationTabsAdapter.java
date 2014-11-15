@@ -23,20 +23,10 @@ public class LocationTabsAdapter extends FragmentPagerAdapter {
     public LocationTabsAdapter(ActionBarActivity activity) {
         super(activity.getSupportFragmentManager());
         mContext = activity;
-
-        updateTabInfo();
     }
 
-    private void updateTabInfo() {
-        Cursor cursor = mContext.getContentResolver().query(
-                Contract.Location.CONTENT_URI, null, null, null, null);
-
-        if (cursor.moveToFirst()) {
-            mLocations.clear();
-            do {
-                mLocations.add(new LocationInfo(cursor));
-            } while (cursor.moveToNext());
-        }
+    public void addLocationInfo(LocationInfo locationInfo) {
+        mLocations.add(locationInfo);
     }
 
     @Override

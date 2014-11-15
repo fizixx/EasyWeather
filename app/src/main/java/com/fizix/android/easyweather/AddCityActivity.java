@@ -79,11 +79,7 @@ public class AddCityActivity extends ActionBarActivity implements SearchView.OnQ
 
         getContentResolver().insert(Contract.Location.CONTENT_URI, values);
 
-        try {
-            finalize();
-        } catch (Throwable throwable) {
-            Log.i(LOG_TAG, "Could not close activity.", throwable);
-        }
+        finish();
     }
 
     @Override

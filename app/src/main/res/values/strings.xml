@@ -9,5 +9,6 @@
     <string name="start_search">Enter a city name to start the search</string>
     <string name="no_cities_found">No cities found, please try again</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="clear_all_data">Clear All</string>
 
 </resources>
