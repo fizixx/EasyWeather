@@ -41,9 +41,6 @@ public class WeatherListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_weather_list, container, false);
 
-        TextView text = (TextView) rootView.findViewById(R.id.text);
-        text.setText(String.valueOf(mLocationId));
-
         return rootView;
     }
 
