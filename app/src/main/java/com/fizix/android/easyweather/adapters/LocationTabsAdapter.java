@@ -28,14 +28,13 @@ public class LocationTabsAdapter extends FragmentPagerAdapter {
     }
 
     private void updateTabInfo() {
-        Cursor cursor = mContext.getContentResolver().query(Contract.Location.CONTENT_URI, null, null, null, null);
+        Cursor cursor = mContext.getContentResolver().query(
+                Contract.Location.CONTENT_URI, null, null, null, null);
+
         if (cursor.moveToFirst()) {
             mLocations.clear();
             do {
                 mLocations.add(new LocationInfo(cursor));
-                mLocations.add(new LocationInfo(2, "This is a longer title", 0.0f, 0.0f));
-                mLocations.add(new LocationInfo(3, "Another title", 0.0f, 0.0f));
-                mLocations.add(new LocationInfo(4, "One more just for testing purposes", 0.0f, 0.0f));
             } while (cursor.moveToNext());
         }
     }
