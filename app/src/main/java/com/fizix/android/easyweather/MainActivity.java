@@ -12,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.fizix.android.easyweather.adapters.LocationTabsAdapter;
 import com.fizix.android.easyweather.data.Contract;
@@ -26,6 +28,7 @@ public class MainActivity extends ActionBarActivity implements Toolbar.OnMenuIte
     private SlidingTabLayout mSlidingTabs;
     private ViewPager mViewPager;
     private Toolbar mToolbar;
+    private TextView mTapToAddLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +36,9 @@ public class MainActivity extends ActionBarActivity implements Toolbar.OnMenuIte
         setContentView(R.layout.activity_main);
 
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
-
         mSlidingTabs = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
+        mTapToAddLocation = (TextView) findViewById(R.id.tap_to_add_location);
+        mTapToAddLocation.setVisibility(View.GONE);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -95,10 +99,16 @@ public class MainActivity extends ActionBarActivity implements Toolbar.OnMenuIte
                 Log.i(LOG_TAG, "LocationInfo: " + locationInfo.getCityName());
                 adapter.addLocationInfo(locationInfo);
             } while (cursor.moveToNext());
-        }
 
-        mViewPager.setAdapter(adapter);
-        mSlidingTabs.setViewPager(mViewPager);
+            mViewPager.setAdapter(adapter);
+            mViewPager.setVisibility(View.VISIBLE);
+            mSlidingTabs.setViewPager(mViewPager);
+            mTapToAddLocation.setVisibility(View.GONE);
+        } else {
+            // We don't have any cities.
+            mViewPager.setVisibility(View.GONE);
+            mTapToAddLocation.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
