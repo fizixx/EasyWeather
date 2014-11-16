@@ -22,6 +22,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -30,7 +31,9 @@ class SlidingTabStrip extends LinearLayout {
 
     private static final int DEFAULT_BOTTOM_BORDER_THICKNESS_DIPS = 2;
     private static final byte DEFAULT_BOTTOM_BORDER_COLOR_ALPHA = 0x26;
-    private static final int SELECTED_INDICATOR_THICKNESS_DIPS = 8;
+    private static final int SELECTED_INDICATOR_THICKNESS_DIPS = 3;
+    private static final int SELECTED_INDICATOR_OFFSET_DIPS = 3;
+    private static final int SELECTED_INDICATOR_HORIZONTAL_MARGIN_DIPS = 8;
     private static final int DEFAULT_SELECTED_INDICATOR_COLOR = 0xFFFFFFFF;
 
     private static final int DEFAULT_DIVIDER_THICKNESS_DIPS = 1;
@@ -41,6 +44,8 @@ class SlidingTabStrip extends LinearLayout {
     private final Paint mBottomBorderPaint;
 
     private final int mSelectedIndicatorThickness;
+    private final int mSelectedIndicatorOffset;
+    private final int mSelectedIndicatorHorizontalMargin;
     private final Paint mSelectedIndicatorPaint;
 
     private final int mDefaultBottomBorderColor;
@@ -81,6 +86,8 @@ class SlidingTabStrip extends LinearLayout {
         mBottomBorderPaint.setColor(mDefaultBottomBorderColor);
 
         mSelectedIndicatorThickness = (int) (SELECTED_INDICATOR_THICKNESS_DIPS * density);
+        mSelectedIndicatorOffset = (int) (SELECTED_INDICATOR_OFFSET_DIPS * density);
+        mSelectedIndicatorHorizontalMargin = (int) (SELECTED_INDICATOR_HORIZONTAL_MARGIN_DIPS * density);
         mSelectedIndicatorPaint = new Paint();
 
         mDividerHeight = DEFAULT_DIVIDER_HEIGHT;
@@ -145,12 +152,15 @@ class SlidingTabStrip extends LinearLayout {
 
             mSelectedIndicatorPaint.setColor(color);
 
-            canvas.drawRect(left, height - mSelectedIndicatorThickness, right,
-                    height, mSelectedIndicatorPaint);
+            canvas.drawRect(
+                    left + mSelectedIndicatorHorizontalMargin,
+                    height - mSelectedIndicatorThickness - mSelectedIndicatorOffset,
+                    right - mSelectedIndicatorHorizontalMargin,
+                    height - mSelectedIndicatorOffset, mSelectedIndicatorPaint);
         }
 
         // Thin underline along the entire bottom edge
-        canvas.drawRect(0, height - mBottomBorderThickness, getWidth(), height, mBottomBorderPaint);
+        // canvas.drawRect(0, height - mBottomBorderThickness, getWidth(), height, mBottomBorderPaint);
 
         // Vertical separators between the titles
         int separatorTop = (height - dividerHeightPx) / 2;
