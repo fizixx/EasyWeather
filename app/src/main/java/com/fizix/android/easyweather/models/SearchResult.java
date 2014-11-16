@@ -2,31 +2,31 @@ package com.fizix.android.easyweather.models;
 
 public class SearchResult {
 
-    private String mCityName;
+    private String mLocation;
     private String mCountryCode;
     private double mCoordLat;
     private double mCoordLong;
 
     public SearchResult() {
-        mCityName = "Unknown";
+        mLocation = "Unknown";
         mCountryCode = "Unknown";
         mCoordLat = 0.0;
         mCoordLong = 0.0;
     }
 
-    public SearchResult(String cityName, String countryCode, double coordLat, double coordLong) {
-        mCityName = cityName;
+    public SearchResult(String location, String countryCode, double coordLat, double coordLong) {
+        mLocation = location;
         mCountryCode = countryCode;
         mCoordLat = coordLat;
         mCoordLong = coordLong;
     }
 
-    public String getCityName() {
-        return mCityName;
+    public String getLocation() {
+        return mLocation;
     }
 
-    public void setCityName(String cityName) {
-        mCityName = cityName;
+    public void setLocation(String location) {
+        mLocation = location;
     }
 
     public String getCountryCode() {
@@ -59,7 +59,7 @@ public class SearchResult {
 
     @Override
     public String toString() {
-        return "Search result: " + mCityName;
+        return "Search result: " + mLocation;
     }
 
 }

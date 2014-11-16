@@ -21,7 +21,8 @@ public class DbHelperTest extends TestBase {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues locationValues = new ContentValues();
-        locationValues.put(Contract.Location.COL_CITY_NAME, "Cape Town, South Africa");
+        locationValues.put(Contract.Location.COL_LOCATION, "Cape Town, South Africa");
+        locationValues.put(Contract.Location.COL_CITY_NAME, "Cape Town");
         locationValues.put(Contract.Location.COL_COORD_LAT, 123.123);
         locationValues.put(Contract.Location.COL_COORD_LONG, 456.456);
 

@@ -72,8 +72,13 @@ public class AddCityActivity extends ActionBarActivity implements SearchView.OnQ
     }
 
     private void addLocation(SearchResult result) {
+        // Get the city name from the location.
+        String[] parts = result.getLocation().split(",");
+        String cityName = (parts.length > 1) ? parts[0] : result.getLocation();
+
         ContentValues values = new ContentValues();
-        values.put(Contract.Location.COL_CITY_NAME, result.getCityName());
+        values.put(Contract.Location.COL_LOCATION, result.getLocation());
+        values.put(Contract.Location.COL_CITY_NAME, cityName);
         values.put(Contract.Location.COL_COORD_LAT, result.getCoordLat());
         values.put(Contract.Location.COL_COORD_LONG, result.getCoordLong());
 

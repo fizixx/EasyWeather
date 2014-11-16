@@ -25,6 +25,7 @@ public class TestBase extends AndroidTestCase {
     static protected ContentValues getLocationContentValues() {
         ContentValues values = new ContentValues();
 
+        values.put(Contract.Location.COL_LOCATION, "Cape Town, South Africa");
         values.put(Contract.Location.COL_CITY_NAME, "Cape Town");
         values.put(Contract.Location.COL_COORD_LAT, 100);
         values.put(Contract.Location.COL_COORD_LONG, 100);

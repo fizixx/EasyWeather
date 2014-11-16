@@ -23,6 +23,7 @@ public class Contract {
         public static final String TABLE_NAME = "location";
 
         // Columns
+        public static final String COL_LOCATION = "location";
         public static final String COL_CITY_NAME = "city_name";
         public static final String COL_COORD_LAT = "lat";
         public static final String COL_COORD_LONG = "long";

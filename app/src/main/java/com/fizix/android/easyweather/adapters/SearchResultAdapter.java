@@ -35,7 +35,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         SearchResult result = mResults.get(position);
 
-        viewHolder.cityName.setText(result.getCityName());
+        viewHolder.cityName.setText(result.getLocation());
         viewHolder.countryCode.setText(result.getCountryCode());
         viewHolder.coords.setText(result.getCoordsAsString());
     }
