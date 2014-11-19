@@ -5,15 +5,19 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 public class WeatherListFragment extends Fragment {
 
-    public static final String ARG_LOCATION_ID = "location_id";
-
-    private long mLocationId;
+    public static final String ARG_LOCATION = "location";
+    private static final String LOG_TAG = WeatherListFragment.class.getSimpleName();
+    private String mLocation;
     private RecyclerView mRecyclerView;
 
     public WeatherListFragment() {
@@ -23,7 +27,7 @@ public class WeatherListFragment extends Fragment {
         WeatherListFragment fragment = new WeatherListFragment();
 
         Bundle args = new Bundle();
-        args.putLong(ARG_LOCATION_ID, locationId);
+        args.putLong(ARG_LOCATION, locationId);
 
         fragment.setArguments(args);
 
@@ -33,9 +37,31 @@ public class WeatherListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Tell the activity we're on that we have actions.
+        setHasOptionsMenu(true);
+
         if (getArguments() != null) {
-            mLocationId = getArguments().getLong(ARG_LOCATION_ID);
+            mLocation = getArguments().getString(ARG_LOCATION);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.weather_list_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_refresh) {
+            // Start an async task to refresh the weather data for the current location.
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -21,7 +21,7 @@ import com.fizix.android.easyweather.data.LocationInfo;
 import com.fizix.android.easyweather.views.SlidingTabLayout;
 
 
-public class MainActivity extends ActionBarActivity implements Toolbar.OnMenuItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final int LOADER_LOCATION = 0;
@@ -48,7 +48,7 @@ public class MainActivity extends ActionBarActivity implements Toolbar.OnMenuIte
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        mToolbar.setOnMenuItemClickListener(this);
+        //mToolbar.setOnMenuItemClickListener(this);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.ic_launcher);
 
@@ -64,8 +64,8 @@ public class MainActivity extends ActionBarActivity implements Toolbar.OnMenuIte
     }
 
     @Override
-    public boolean onMenuItemClick(MenuItem menuItem) {
-        int id = menuItem.getItemId();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
 
         switch (id) {
             case R.id.action_add_city:
@@ -77,7 +77,7 @@ public class MainActivity extends ActionBarActivity implements Toolbar.OnMenuIte
                 return true;
         }
 
-        return false;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
