@@ -14,6 +14,9 @@ public class Provider extends ContentProvider {
     private static final int LOCATION = 200;
     private static final int LOCATION_ID = 201;
 
+    private static final int DAY_ENTRY_DIR = 300;
+
+    private static final UriMatcher sUriMatcher = buildUriMatcher();
     private DbHelper mDbHelper;
 
     private static UriMatcher buildUriMatcher() {
@@ -23,10 +26,10 @@ public class Provider extends ContentProvider {
         matcher.addURI(authority, Contract.PATH_LOCATION, LOCATION);
         matcher.addURI(authority, Contract.PATH_LOCATION + "/#", LOCATION_ID);
 
+        matcher.addURI(authority, Contract.PATH_DAY_ENTRY, DAY_ENTRY_DIR);
+
         return matcher;
     }
-
-    private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     @Override
     public boolean onCreate() {
@@ -64,6 +67,20 @@ public class Provider extends ContentProvider {
                         sortOrder
                 );
                 break;
+
+            }
+
+            case DAY_ENTRY_DIR: {
+                retCursor = mDbHelper.getReadableDatabase().query(
+                        Contract.DayEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
             }
 
             default:
@@ -87,6 +104,9 @@ public class Provider extends ContentProvider {
             case LOCATION_ID:
                 return Contract.Location.CONTENT_ITEM_TYPE;
 
+            case DAY_ENTRY_DIR:
+                return Contract.DayEntry.CONTENT_TYPE_DIR;
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
 
@@ -105,6 +125,15 @@ public class Provider extends ContentProvider {
                 long id = db.insert(Contract.Location.TABLE_NAME, null, values);
                 if (id > 0)
                     retUri = Contract.Location.buildLocationUri(id);
+                else
+                    throw new SQLException("Failed to insert row into " + uri);
+                break;
+            }
+
+            case DAY_ENTRY_DIR: {
+                long id = db.insert(Contract.DayEntry.TABLE_NAME, null, values);
+                if (id > 0)
+                    retUri = Contract.DayEntry.buildDayEntryUri(id);
                 else
                     throw new SQLException("Failed to insert row into " + uri);
                 break;
@@ -134,6 +163,11 @@ public class Provider extends ContentProvider {
                 break;
             }
 
+            case DAY_ENTRY_DIR: {
+                rowsDeleted = db.delete(Contract.DayEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            }
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
 
@@ -150,12 +184,17 @@ public class Provider extends ContentProvider {
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
-        int rowsUpdated = 0;
+        int rowsUpdated;
 
         switch (match) {
 
             case LOCATION: {
                 rowsUpdated = db.update(Contract.Location.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            }
+
+            case DAY_ENTRY_DIR: {
+                rowsUpdated = db.update(Contract.DayEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             }
 

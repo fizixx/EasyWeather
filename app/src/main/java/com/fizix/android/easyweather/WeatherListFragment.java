@@ -17,19 +17,24 @@ import com.fizix.android.easyweather.utils.FetchWeatherTask;
 
 public class WeatherListFragment extends Fragment {
 
-    public static final String ARG_LOCATION = "location";
     private static final String LOG_TAG = WeatherListFragment.class.getSimpleName();
+
+    private static final String ARG_LOCATION = "location";
+    private static final String ARG_LOCATION_ID = "location_id";
+
+    private long mLocationId;
     private String mLocation;
     private RecyclerView mRecyclerView;
 
     public WeatherListFragment() {
     }
 
-    public static WeatherListFragment newInstance(String location) {
+    public static WeatherListFragment newInstance(long locationId, String location) {
         WeatherListFragment fragment = new WeatherListFragment();
 
         Bundle args = new Bundle();
         args.putString(ARG_LOCATION, location);
+        args.putLong(ARG_LOCATION_ID, locationId);
 
         fragment.setArguments(args);
 
@@ -43,8 +48,10 @@ public class WeatherListFragment extends Fragment {
         // Tell the activity we're on that we have actions.
         setHasOptionsMenu(true);
 
-        if (getArguments() != null) {
-            mLocation = getArguments().getString(ARG_LOCATION);
+        Bundle args = getArguments();
+        if (args != null) {
+            mLocationId = args.getLong(ARG_LOCATION_ID);
+            mLocation = args.getString(ARG_LOCATION);
         }
     }
 
@@ -62,7 +69,7 @@ public class WeatherListFragment extends Fragment {
             // Start an async task to refresh the weather data for the current location.
             Log.i(LOG_TAG, "Refreshing: " + mLocation);
 
-            FetchWeatherTask task = new FetchWeatherTask(mLocation);
+            FetchWeatherTask task = new FetchWeatherTask(getActivity(), mLocationId, mLocation);
             task.execute();
 
             return true;

@@ -1,34 +1,32 @@
 package com.fizix.android.easyweather.utils;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.fizix.android.easyweather.data.Contract;
-import com.fizix.android.easyweather.models.SearchResult;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FetchWeatherTask extends AsyncTask<Void, Void, List<ContentValues>> {
 
     private static final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
 
+    private Context mContext;
+    private long mLocationId;
     private String mLocation;
 
-    public FetchWeatherTask(String location) {
+    public FetchWeatherTask(Context context, long locationId, String location) {
+        mContext = context;
+        mLocationId = locationId;
         mLocation = location;
     }
 
@@ -68,6 +66,12 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, List<ContentValues>>
             // Parse the json and get a list of the results.
             List<ContentValues> results = WundergroundParser.parseForecast(inputStream);
 
+            for (ContentValues contentValues : results) {
+                // Make sure the contentValues has a location_id set.
+                contentValues.put(Contract.DayEntry.COL_LOCATION_ID, mLocationId);
+                mContext.getContentResolver().insert(Contract.DayEntry.CONTENT_URI, contentValues);
+            }
+
             return results;
 
         } catch (MalformedURLException e) {
@@ -85,10 +89,4 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, List<ContentValues>>
         return null;
     }
 
-    @Override
-    protected void onPostExecute(List<ContentValues> results) {
-        for (ContentValues values : results) {
-            Log.i(LOG_TAG, "date: " + values.get(Contract.DayEntry.COL_DATE));
-        }
-    }
 }

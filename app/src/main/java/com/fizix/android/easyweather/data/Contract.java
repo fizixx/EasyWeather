@@ -40,7 +40,7 @@ public class Contract {
         // Content Provider Constants
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_DAY_ENTRY).build();
         public static final String CONTENT_TYPE_DIR = "vnd.android.cursor.dir/" + CONTENT_AUTHORITY + "/" + PATH_DAY_ENTRY;
-        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/" + CONTENT_AUTHORITY + "/" + PATH_DAY_ENTRY;
+        public static final String CONTENT_TYPE_ITEM = "vnd.android.cursor.item/" + CONTENT_AUTHORITY + "/" + PATH_DAY_ENTRY;
 
         // Table Name
         public static final String TABLE_NAME = "day_entry";
@@ -80,6 +80,10 @@ public class Contract {
         public static final String COL_AVG_HUMIDITY = "avg_humidity";
         public static final String COL_MAX_HUMIDITY = "max_humidity";
         public static final String COL_MIN_HUMIDITY = "min_humidity";
+
+        public static Uri buildDayEntryUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
 
         // Return the string representation of the given date components.
         public static String createDateString(int year, int month, int day) {
