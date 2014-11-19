@@ -33,7 +33,7 @@ public class ProviderTest extends TestBase {
     public void testGetType() throws Throwable {
         // content://com.fizix.android.easyweather/location/
         String type = mContext.getContentResolver().getType(Contract.Location.CONTENT_URI);
-        assertEquals(Contract.Location.CONTENT_TYPE, type);
+        assertEquals(Contract.Location.CONTENT_TYPE_DIR, type);
 
         type = mContext.getContentResolver().getType(Contract.Location.buildLocationUri((101)));
         assertEquals(Contract.Location.CONTENT_ITEM_TYPE, type);

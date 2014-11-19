@@ -82,7 +82,7 @@ public class Provider extends ContentProvider {
         switch (match) {
 
             case LOCATION:
-                return Contract.Location.CONTENT_TYPE;
+                return Contract.Location.CONTENT_TYPE_DIR;
 
             case LOCATION_ID:
                 return Contract.Location.CONTENT_ITEM_TYPE;
