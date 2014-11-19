@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 
 import com.fizix.android.easyweather.WeatherListFragment;
 import com.fizix.android.easyweather.data.Contract;
@@ -32,7 +33,7 @@ public class LocationTabsAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         LocationInfo locationInfo = mLocations.get(position);
-        return WeatherListFragment.newInstance(locationInfo.getId());
+        return WeatherListFragment.newInstance(locationInfo.getLocation());
     }
 
     @Override

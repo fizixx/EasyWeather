@@ -5,12 +5,14 @@ import android.database.Cursor;
 public class LocationInfo {
 
     private long mId;
+    private String mLocation;
     private String mCityName;
     private float mCoordLat;
     private float mCoordLong;
 
-    public LocationInfo(long id, String cityName, float coordLat, float coordLong) {
+    public LocationInfo(long id, String location, String cityName, float coordLat, float coordLong) {
         mId = id;
+        mLocation = location;
         mCityName = cityName;
         mCoordLat = coordLat;
         mCoordLong = coordLong;
@@ -22,6 +24,10 @@ public class LocationInfo {
 
     public long getId() {
         return mId;
+    }
+
+    public String getLocation() {
+        return mLocation;
     }
 
     public String getCityName() {
@@ -38,6 +44,7 @@ public class LocationInfo {
 
     public void loadFromCursor(Cursor cursor) {
         mId = cursor.getLong(cursor.getColumnIndex(Contract.Location._ID));
+        mLocation = cursor.getString(cursor.getColumnIndex(Contract.Location.COL_LOCATION));
         mCityName = cursor.getString(cursor.getColumnIndex(Contract.Location.COL_CITY_NAME));
         mCoordLat = cursor.getFloat(cursor.getColumnIndex(Contract.Location.COL_COORD_LAT));
         mCoordLong = cursor.getFloat(cursor.getColumnIndex(Contract.Location.COL_COORD_LONG));

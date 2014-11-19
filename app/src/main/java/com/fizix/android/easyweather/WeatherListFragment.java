@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.fizix.android.easyweather.utils.FetchWeatherTask;
+
 public class WeatherListFragment extends Fragment {
 
     public static final String ARG_LOCATION = "location";
@@ -23,11 +25,11 @@ public class WeatherListFragment extends Fragment {
     public WeatherListFragment() {
     }
 
-    public static WeatherListFragment newInstance(long locationId) {
+    public static WeatherListFragment newInstance(String location) {
         WeatherListFragment fragment = new WeatherListFragment();
 
         Bundle args = new Bundle();
-        args.putLong(ARG_LOCATION, locationId);
+        args.putString(ARG_LOCATION, location);
 
         fragment.setArguments(args);
 
@@ -58,6 +60,11 @@ public class WeatherListFragment extends Fragment {
 
         if (id == R.id.action_refresh) {
             // Start an async task to refresh the weather data for the current location.
+            Log.i(LOG_TAG, "Refreshing: " + mLocation);
+
+            FetchWeatherTask task = new FetchWeatherTask(mLocation);
+            task.execute();
+
             return true;
         }
 

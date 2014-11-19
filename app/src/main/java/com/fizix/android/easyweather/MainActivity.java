@@ -86,6 +86,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
         String[] columns = {
                 Contract.Location._ID,
+                Contract.Location.COL_LOCATION,
                 Contract.Location.COL_CITY_NAME,
                 Contract.Location.COL_COORD_LAT,
                 Contract.Location.COL_COORD_LONG,

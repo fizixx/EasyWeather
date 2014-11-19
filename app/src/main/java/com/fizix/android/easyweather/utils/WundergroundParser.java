@@ -12,8 +12,6 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class WundergroundParser {
 
@@ -180,7 +178,7 @@ public class WundergroundParser {
         while (reader.hasNext()) {
             String name = reader.nextName();
             if (name.equals("mm")) {
-                value = Integer.parseInt(reader.nextString());
+                value = reader.nextInt();
             } else {
                 reader.skipValue();
             }
