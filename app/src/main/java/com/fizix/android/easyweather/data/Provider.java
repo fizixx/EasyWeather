@@ -15,6 +15,7 @@ public class Provider extends ContentProvider {
     private static final int LOCATION_ID = 201;
 
     private static final int DAY_ENTRY_DIR = 300;
+    private static final int DAY_ENTRY_DIR_BY_LOCATION = 301;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private DbHelper mDbHelper;
@@ -27,6 +28,7 @@ public class Provider extends ContentProvider {
         matcher.addURI(authority, Contract.PATH_LOCATION + "/#", LOCATION_ID);
 
         matcher.addURI(authority, Contract.PATH_DAY_ENTRY, DAY_ENTRY_DIR);
+        matcher.addURI(authority, Contract.PATH_DAY_ENTRY + "/*", DAY_ENTRY_DIR_BY_LOCATION);
 
         return matcher;
     }
@@ -70,12 +72,15 @@ public class Provider extends ContentProvider {
 
             }
 
-            case DAY_ENTRY_DIR: {
+            case DAY_ENTRY_DIR_BY_LOCATION: {
+                // Get the location_id from the URI.
+                String locationId = uri.getPathSegments().get(1);
+
                 retCursor = mDbHelper.getReadableDatabase().query(
                         Contract.DayEntry.TABLE_NAME,
                         projection,
-                        selection,
-                        selectionArgs,
+                        Contract.DayEntry.COL_LOCATION_ID + " = ?",
+                        new String[] {locationId},
                         null,
                         null,
                         sortOrder

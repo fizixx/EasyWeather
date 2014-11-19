@@ -24,6 +24,7 @@ public class Contract {
         public static final String TABLE_NAME = "location";
 
         // Columns
+
         public static final String COL_LOCATION = "location";
         public static final String COL_CITY_NAME = "city_name";
         public static final String COL_COORD_LAT = "lat";
@@ -56,26 +57,21 @@ public class Contract {
         // Temperature in celcius.
         public static final String COL_TEMP_HIGH = "temp_high";
         public static final String COL_TEMP_LOW = "temp_low";
-
         // String holding the description of the weather, e.g. partlycloudy, clear, etc.
         public static final String COL_ICON = "icon";
-
         // QPF in mm.
         public static final String COL_QPF_ALL_DAY = "qpf_all_day";
         public static final String COL_QPF_DAY = "qpf_day";
         public static final String COL_QPF_NIGHT = "qpf_night";
-
         // Snow in cm.
         public static final String COL_SNOW_ALL_DAY = "snow_all_day";
         public static final String COL_SNOW_DAY = "snow_day";
         public static final String COL_SNOW_NIGHT = "snow_night";
-
         // Max/avg wind speed in km/h and direction in degrees.
         public static final String COL_MAX_WIND_SPEED = "max_wind_speed";
         public static final String COL_MAX_WIND_DEGREES = "max_wind_degrees";
         public static final String COL_AVG_WIND_SPEED = "avg_wind_speed";
         public static final String COL_AVG_WIND_DEGREES = "avg_wind_degrees";
-
         // Humidity in %.
         public static final String COL_AVG_HUMIDITY = "avg_humidity";
         public static final String COL_MAX_HUMIDITY = "max_humidity";
@@ -89,7 +85,10 @@ public class Contract {
         public static String createDateString(int year, int month, int day) {
             return String.format("%04d%02d%02d", year, month, day);
         }
-
+        
+        public static Uri buildDayEntryByLocationUri(long locationId) {
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(locationId)).build();
+        }
     }
 
 }

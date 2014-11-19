@@ -132,7 +132,7 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
 
         return new CursorLoader(
                 getActivity(),
-                Contract.DayEntry.CONTENT_URI,
+                Contract.DayEntry.buildDayEntryByLocationUri(mLocationId),
                 columns,
                 null,
                 null,

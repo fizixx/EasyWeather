@@ -16,7 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-public class FetchWeatherTask extends AsyncTask<Void, Void, List<ContentValues>> {
+public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
 
     private static final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
 
@@ -31,7 +31,7 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, List<ContentValues>>
     }
 
     @Override
-    protected List<ContentValues> doInBackground(Void... params) {
+    protected Void doInBackground(Void... params) {
         Log.i(LOG_TAG, "doInBackground: " + mLocation);
 
         HttpURLConnection urlConnection = null;
@@ -66,13 +66,13 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, List<ContentValues>>
             // Parse the json and get a list of the results.
             List<ContentValues> results = WundergroundParser.parseForecast(inputStream);
 
-            for (ContentValues contentValues : results) {
-                // Make sure the contentValues has a location_id set.
-                contentValues.put(Contract.DayEntry.COL_LOCATION_ID, mLocationId);
-                mContext.getContentResolver().insert(Contract.DayEntry.CONTENT_URI, contentValues);
+            if (results != null) {
+                for (ContentValues contentValues : results) {
+                    // Make sure the contentValues has a location_id set.
+                    contentValues.put(Contract.DayEntry.COL_LOCATION_ID, mLocationId);
+                    mContext.getContentResolver().insert(Contract.DayEntry.CONTENT_URI, contentValues);
+                }
             }
-
-            return results;
 
         } catch (MalformedURLException e) {
             Log.e(LOG_TAG, "Unable to parse url.", e);
