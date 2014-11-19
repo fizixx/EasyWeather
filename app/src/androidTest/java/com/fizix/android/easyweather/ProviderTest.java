@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.fizix.android.easyweather.data.Contract;
 
-public class ProviderTest extends TestBase {
+public class ProviderTest extends DataTestBase {
 
     private static final String LOG_TAG = ProviderTest.class.getSimpleName();
 

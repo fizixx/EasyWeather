@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.fizix.android.easyweather.data.Contract;
 import com.fizix.android.easyweather.data.DbHelper;
 
-public class DbHelperTest extends TestBase {
+public class DbHelperTest extends DataTestBase {
 
     public void testCreateDb() throws Throwable {
         mContext.deleteDatabase(DbHelper.DATABASE_NAME);

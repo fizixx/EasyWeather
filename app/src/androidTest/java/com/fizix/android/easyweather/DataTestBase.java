@@ -9,7 +9,7 @@ import com.fizix.android.easyweather.data.Contract;
 import java.util.Map;
 import java.util.Set;
 
-public class TestBase extends AndroidTestCase {
+public class DataTestBase extends AndroidTestCase {
 
     static protected void validateCursor(Cursor cursor, ContentValues contentValues) {
         Set<Map.Entry<String, Object>> valueSet = contentValues.valueSet();
