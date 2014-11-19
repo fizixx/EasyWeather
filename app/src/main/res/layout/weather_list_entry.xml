@@ -17,6 +17,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -42,6 +43,7 @@
 
 
         <TextView
+            android:id="@+id/temp_max"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -50,6 +52,7 @@
             android:textAppearance="?android:textAppearanceMedium" />
 
         <TextView
+            android:id="@+id/temp_min"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

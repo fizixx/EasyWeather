@@ -1,10 +1,12 @@
 package com.fizix.android.easyweather;
 
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,10 +14,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
+import com.fizix.android.easyweather.adapters.DayEntryAdapter;
+import com.fizix.android.easyweather.data.Contract;
 import com.fizix.android.easyweather.utils.FetchWeatherTask;
 
-public class WeatherListFragment extends Fragment {
+public class WeatherListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String LOG_TAG = WeatherListFragment.class.getSimpleName();
 
@@ -24,7 +29,12 @@ public class WeatherListFragment extends Fragment {
 
     private long mLocationId;
     private String mLocation;
-    private RecyclerView mRecyclerView;
+    private ListView mDayEntryList;
+
+    // The adapter used by the day entry list.
+    DayEntryAdapter mDayEntryAdapter;
+
+    private static final int DAY_ENTRY_LOADER = 1;
 
     public WeatherListFragment() {
     }
@@ -56,6 +66,12 @@ public class WeatherListFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(DAY_ENTRY_LOADER, null, this);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.weather_list_menu, menu);
@@ -83,53 +99,54 @@ public class WeatherListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_weather_list, container, false);
 
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler);
-        mRecyclerView.setHasFixedSize(true);
-
-        // Use a linear layout manager.
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        // Create a adapter for the list.
-        WeatherEntryAdapter adapter = new WeatherEntryAdapter(
-                new String[]{"Item 1", "Item 2", "Item 3", "Item 4", "Item 5",
-                        "Item 6", "Item 7", "Item 8", "Item 9", "Item 10"});
-        mRecyclerView.setAdapter(adapter);
+        mDayEntryList = (ListView) rootView.findViewById(R.id.day_entry_list);
+        mDayEntryAdapter = new DayEntryAdapter(getActivity(), null, 0);
+        mDayEntryList.setAdapter(mDayEntryAdapter);
 
         return rootView;
     }
 
-    public static class WeatherEntryAdapter extends RecyclerView.Adapter<WeatherEntryAdapter.ViewHolder> {
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        final String[] columns = new String[]{
+                Contract.DayEntry._ID,
+                Contract.DayEntry.COL_LOCATION_ID,
+                Contract.DayEntry.COL_DATE,
+                Contract.DayEntry.COL_TEMP_HIGH,
+                Contract.DayEntry.COL_TEMP_LOW,
+                Contract.DayEntry.COL_ICON,
+                Contract.DayEntry.COL_QPF_ALL_DAY,
+                Contract.DayEntry.COL_QPF_DAY,
+                Contract.DayEntry.COL_QPF_NIGHT,
+                Contract.DayEntry.COL_SNOW_ALL_DAY,
+                Contract.DayEntry.COL_SNOW_DAY,
+                Contract.DayEntry.COL_SNOW_NIGHT,
+                Contract.DayEntry.COL_MAX_WIND_SPEED,
+                Contract.DayEntry.COL_MAX_WIND_DEGREES,
+                Contract.DayEntry.COL_AVG_WIND_SPEED,
+                Contract.DayEntry.COL_AVG_WIND_DEGREES,
+                Contract.DayEntry.COL_AVG_HUMIDITY,
+                Contract.DayEntry.COL_MAX_HUMIDITY,
+                Contract.DayEntry.COL_MIN_HUMIDITY
+        };
 
-        private String[] mDataSet;
-
-        public WeatherEntryAdapter(String[] dataSet) {
-            mDataSet = dataSet;
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.weather_list_entry, viewGroup, false);
-            ViewHolder viewHolder = new ViewHolder(v);
-            return viewHolder;
-        }
-
-        @Override
-        public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        }
-
-        @Override
-        public int getItemCount() {
-            return mDataSet.length;
-        }
-
-        public static class ViewHolder extends RecyclerView.ViewHolder {
-
-            public ViewHolder(View parent) {
-                super(parent);
-            }
-
-        }
-
+        return new CursorLoader(
+                getActivity(),
+                Contract.DayEntry.CONTENT_URI,
+                columns,
+                null,
+                null,
+                null
+        );
     }
 
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        mDayEntryAdapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+        Log.i(LOG_TAG, "onLoaderReset");
+    }
 }
