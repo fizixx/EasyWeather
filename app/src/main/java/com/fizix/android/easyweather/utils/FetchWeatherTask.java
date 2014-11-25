@@ -32,15 +32,9 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        Log.i(LOG_TAG, "doInBackground: " + mQueryParam);
-
         HttpURLConnection urlConnection = null;
-        BufferedReader reader;
-        String jsonString = null;
 
         try {
-            // http://api.wunderground.com/api/f2a4fe2862596f5e/forecast10day/q/CA/San_Francisco.json
-
             final String BASE_URL = "http://api.wunderground.com/api/";
 
             Uri uri = Uri.parse(BASE_URL).buildUpon()
@@ -64,14 +58,13 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
             InputStream inputStream = urlConnection.getInputStream();
 
             // Parse the json and get a list of the results.
-            List<ContentValues> results = WundergroundParser.parseForecast(inputStream);
+            List<ContentValues> results = WundergroundParser.parseForecast(inputStream, mLocationId);
 
             if (results != null) {
-                for (ContentValues contentValues : results) {
-                    // Make sure the contentValues has a location_id set.
-                    contentValues.put(Contract.DayEntry.COL_LOCATION_ID, mLocationId);
-                    mContext.getContentResolver().insert(Contract.DayEntry.CONTENT_URI, contentValues);
-                }
+                ContentValues[] valuesToInsert = new ContentValues[results.size()];
+                results.toArray(valuesToInsert);
+
+                mContext.getContentResolver().bulkInsert(Contract.DayEntry.CONTENT_URI, valuesToInsert);
             }
 
         } catch (MalformedURLException e) {

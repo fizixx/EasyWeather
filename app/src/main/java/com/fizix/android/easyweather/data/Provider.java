@@ -215,4 +215,32 @@ public class Provider extends ContentProvider {
         return rowsUpdated;
     }
 
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        final SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+
+        switch (match) {
+            case DAY_ENTRY_DIR: {
+                db.beginTransaction();
+                int returnCount = 0;
+                try {
+                    for (ContentValues value : values) {
+                        long id = db.insert(Contract.DayEntry.TABLE_NAME, null, value);
+                        if (id != -1)
+                            returnCount++;
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            }
+
+            default:
+                return super.bulkInsert(uri, values);
+        }
+    }
+
 }

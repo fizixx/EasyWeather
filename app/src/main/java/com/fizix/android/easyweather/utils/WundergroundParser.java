@@ -17,7 +17,7 @@ public class WundergroundParser {
 
     private static final String LOG_TAG = WundergroundParser.class.getSimpleName();
 
-    public static List<ContentValues> parseForecast(InputStream inStream) {
+    public static List<ContentValues> parseForecast(InputStream inStream, long locationId) {
         List<ContentValues> result = null;
 
         try {
@@ -32,7 +32,7 @@ public class WundergroundParser {
                             reader.beginObject();
                             while (reader.hasNext()) {
                                 if (reader.nextName().equals("forecastday")) {
-                                    result = readForecastDayArray(reader);
+                                    result = readForecastDayArray(reader, locationId);
                                 } else {
                                     reader.skipValue();
                                 }
@@ -60,12 +60,13 @@ public class WundergroundParser {
         return result;
     }
 
-    private static List<ContentValues> readForecastDayArray(JsonReader reader) throws IOException {
+    private static List<ContentValues> readForecastDayArray(JsonReader reader, long locationId) throws IOException {
         ArrayList<ContentValues> result = new ArrayList<ContentValues>();
 
         reader.beginArray();
         while (reader.hasNext()) {
             ContentValues values = readForecastDay(reader);
+            values.put(Contract.DayEntry.COL_LOCATION_ID, locationId);
             if (values != null)
                 result.add(values);
         }
