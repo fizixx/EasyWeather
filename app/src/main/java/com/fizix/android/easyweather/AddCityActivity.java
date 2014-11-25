@@ -1,16 +1,21 @@
 package com.fizix.android.easyweather;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,14 +27,14 @@ import com.fizix.android.easyweather.utils.AutoCompleteTask;
 
 import java.util.List;
 
-public class AddCityActivity extends ActionBarActivity implements SearchView.OnQueryTextListener, AutoCompleteTask.Callbacks {
+public class AddCityActivity extends ActionBarActivity implements AutoCompleteTask.Callbacks {
 
     private static final String LOG_TAG = AddCityActivity.class.getSimpleName();
 
-    private SearchView mSearchView;
-
     private ListView mCityList;
     private SearchResultAdapter mCurrentAdapter;
+
+    private EditText mSearchText;
 
     private ProgressBar mProgressCityList;
     private TextView mStartSearch;
@@ -42,8 +47,24 @@ public class AddCityActivity extends ActionBarActivity implements SearchView.OnQ
 
         // Set up the action bar.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //toolbar.setOnMenuItemClickListener(this);
         setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+
+        // Map the search text.
+        mSearchText = (EditText) findViewById(R.id.search_text);
+        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    startAutocomplete(String.valueOf(mSearchText.getText()));
+                    return true;
+                }
+                return false;
+            }
+        });
 
         mCityList = (ListView) findViewById(R.id.city_list);
         mCityList.setOnItemClickListener(new ListView.OnItemClickListener() {
@@ -67,6 +88,25 @@ public class AddCityActivity extends ActionBarActivity implements SearchView.OnQ
         onSearchRequested();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_add_city, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_search:
+                startAutocomplete(String.valueOf(mSearchText.getText()));
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private void addLocation(SearchResult result) {
         // Get the city name from the location.
         String[] parts = result.getLocation().split(",");
@@ -79,30 +119,20 @@ public class AddCityActivity extends ActionBarActivity implements SearchView.OnQ
         values.put(Contract.Location.COL_COORD_LAT, result.getCoordLat());
         values.put(Contract.Location.COL_COORD_LONG, result.getCoordLong());
 
-        getContentResolver().insert(Contract.Location.CONTENT_URI, values);
+        try {
+            getContentResolver().insert(Contract.Location.CONTENT_URI, values);
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Could not insert location.", e);
+        }
 
         finish();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_add_city, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-
-        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        mSearchView.setOnQueryTextListener(this);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String str) {
+    public boolean startAutocomplete(String str) {
         Log.d(LOG_TAG, "Submitting: " + str);
+
+        // Disable the search input.
+        mSearchText.setEnabled(false);
 
         // Hide the city list.
         mCityList.setVisibility(View.GONE);
@@ -120,13 +150,10 @@ public class AddCityActivity extends ActionBarActivity implements SearchView.OnQ
     }
 
     @Override
-    public boolean onQueryTextChange(String s) {
-        Log.d(LOG_TAG, "Changed to: " + s);
-        return false;
-    }
-
-    @Override
     public void onTaskComplete(List<SearchResult> results) {
+        // Enable the search text again.
+        mSearchText.setEnabled(true);
+
         // Show the no cities found text view if nothing was found and hide the city list.
         if (results.isEmpty()) {
             mNoCitiesFound.setVisibility(View.VISIBLE);

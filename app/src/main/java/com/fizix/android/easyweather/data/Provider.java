@@ -152,7 +152,6 @@ public class Provider extends ContentProvider {
         getContext().getContentResolver().notifyChange(uri, null);
 
         return retUri;
-
     }
 
     @Override
