@@ -1,9 +1,10 @@
 package com.fizix.android.easyweather.adapters;
 
-import android.support.v7.widget.RecyclerView;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.fizix.android.easyweather.R;
@@ -11,54 +12,63 @@ import com.fizix.android.easyweather.models.SearchResult;
 
 import java.util.List;
 
-public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapter.ViewHolder> {
+public class SearchResultAdapter extends BaseAdapter {
 
+    Context mContext;
     List<SearchResult> mResults;
 
-    public SearchResultAdapter(List<SearchResult> results) {
+    public SearchResultAdapter(Context context, List<SearchResult> results) {
         super();
+        mContext = context;
         mResults = results;
     }
 
-    public SearchResult getSearchResult(int position) {
+    @Override
+    public int getCount() {
+        return mResults.size();
+    }
+
+    @Override
+    public SearchResult getItem(int position) {
         return mResults.get(position);
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.search_result_list_item, viewGroup, false);
-        ViewHolder viewHolder = new ViewHolder(v);
-        return viewHolder;
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        SearchResult result = mResults.get(position);
+    public View getView(int position, View convertView, ViewGroup parent) {
+        // Create the new item if one doesn't exist already.
+        if (convertView == null) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.search_result_list_item, parent, false);
+            ViewHolder viewHolder = new ViewHolder(convertView);
+            convertView.setTag(viewHolder);
+        }
 
+        // Get the search result.
+        SearchResult result = getItem(position);
+
+        // Populate the data in the view.
+        ViewHolder viewHolder = (ViewHolder) convertView.getTag();
         viewHolder.cityName.setText(result.getLocation());
         viewHolder.countryCode.setText(result.getCountryCode());
         viewHolder.coords.setText(result.getCoordsAsString());
+
+        return convertView;
     }
 
-    @Override
-    public int getItemCount() {
-        return mResults.size();
-    }
+    private static class ViewHolder {
+        public TextView cityName;
+        public TextView countryCode;
+        public TextView coords;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        TextView cityName;
-        TextView countryCode;
-        TextView coords;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-
-            cityName = (TextView) itemView.findViewById(R.id.city_name);
-            countryCode = (TextView) itemView.findViewById(R.id.country_code);
-            coords = (TextView) itemView.findViewById(R.id.coords);
+        ViewHolder(View parent) {
+            cityName = (TextView) parent.findViewById(R.id.city_name);
+            countryCode = (TextView) parent.findViewById(R.id.country_code);
+            coords = (TextView) parent.findViewById(R.id.coords);
         }
-
     }
 
 }

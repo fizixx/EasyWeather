@@ -4,14 +4,14 @@ import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -19,7 +19,6 @@ import com.fizix.android.easyweather.adapters.SearchResultAdapter;
 import com.fizix.android.easyweather.data.Contract;
 import com.fizix.android.easyweather.models.SearchResult;
 import com.fizix.android.easyweather.utils.AutoCompleteTask;
-import com.fizix.android.easyweather.utils.RecyclerItemClickListener;
 
 import java.util.List;
 
@@ -27,11 +26,10 @@ public class AddCityActivity extends ActionBarActivity implements SearchView.OnQ
 
     private static final String LOG_TAG = AddCityActivity.class.getSimpleName();
 
-    private SearchResultAdapter mCurrentAdapter;
-
     private SearchView mSearchView;
 
-    private RecyclerView mCityList;
+    private ListView mCityList;
+    private SearchResultAdapter mCurrentAdapter;
 
     private ProgressBar mProgressCityList;
     private TextView mStartSearch;
@@ -47,17 +45,15 @@ public class AddCityActivity extends ActionBarActivity implements SearchView.OnQ
         //toolbar.setOnMenuItemClickListener(this);
         setSupportActionBar(toolbar);
 
-        mCityList = (RecyclerView) findViewById(R.id.city_list);
-        mCityList.setLayoutManager(new LinearLayoutManager(this));
-        mCityList.addOnItemTouchListener(new RecyclerItemClickListener(this,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        if (mCurrentAdapter != null) {
-                            addLocation(mCurrentAdapter.getSearchResult(position));
-                        }
-                    }
-                }));
+        mCityList = (ListView) findViewById(R.id.city_list);
+        mCityList.setOnItemClickListener(new ListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (mCurrentAdapter != null) {
+                    addLocation(mCurrentAdapter.getItem(position));
+                }
+            }
+        });
 
         mProgressCityList = (ProgressBar) findViewById(R.id.progress_city_list);
         mProgressCityList.setVisibility(View.GONE);
@@ -136,7 +132,7 @@ public class AddCityActivity extends ActionBarActivity implements SearchView.OnQ
         }
 
         // Create a new adapter for the list.
-        mCurrentAdapter = new SearchResultAdapter(results);
+        mCurrentAdapter = new SearchResultAdapter(this, results);
         mCityList.setAdapter(mCurrentAdapter);
 
         // Show the city list and hide the progress bar.
