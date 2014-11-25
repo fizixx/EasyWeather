@@ -24,11 +24,11 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
 
     private static final String LOG_TAG = WeatherListFragment.class.getSimpleName();
 
-    private static final String ARG_LOCATION = "location";
+    private static final String ARG_QUERY_PARAM = "location";
     private static final String ARG_LOCATION_ID = "location_id";
 
     private long mLocationId;
-    private String mLocation;
+    private String mQueryParam;
     private ListView mDayEntryList;
 
     // The adapter used by the day entry list.
@@ -39,12 +39,12 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
     public WeatherListFragment() {
     }
 
-    public static WeatherListFragment newInstance(long locationId, String location) {
+    public static WeatherListFragment newInstance(long locationId, String queryParam) {
         WeatherListFragment fragment = new WeatherListFragment();
 
         Bundle args = new Bundle();
-        args.putString(ARG_LOCATION, location);
         args.putLong(ARG_LOCATION_ID, locationId);
+        args.putString(ARG_QUERY_PARAM, queryParam);
 
         fragment.setArguments(args);
 
@@ -61,7 +61,9 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
         Bundle args = getArguments();
         if (args != null) {
             mLocationId = args.getLong(ARG_LOCATION_ID);
-            mLocation = args.getString(ARG_LOCATION);
+            mQueryParam = args.getString(ARG_QUERY_PARAM);
+
+            Log.i(LOG_TAG, "Query param: " + mQueryParam);
         }
     }
 
@@ -83,9 +85,9 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
 
         if (id == R.id.action_refresh) {
             // Start an async task to refresh the weather data for the current location.
-            Log.i(LOG_TAG, "Refreshing: " + mLocation);
+            Log.i(LOG_TAG, "Refreshing: " + mQueryParam);
 
-            FetchWeatherTask task = new FetchWeatherTask(getActivity(), mLocationId, mLocation);
+            FetchWeatherTask task = new FetchWeatherTask(getActivity(), mLocationId, mQueryParam);
             task.execute();
 
             return true;

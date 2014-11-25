@@ -86,10 +86,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
         String[] columns = {
                 Contract.Location._ID,
-                Contract.Location.COL_LOCATION,
+                Contract.Location.COL_QUERY_PARAM,
                 Contract.Location.COL_CITY_NAME,
-                Contract.Location.COL_COORD_LAT,
-                Contract.Location.COL_COORD_LONG,
         };
 
         return new CursorLoader(this, Contract.Location.CONTENT_URI, columns, null, null, null);
@@ -97,8 +95,6 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        Log.i(LOG_TAG, "onLoadFinished(...)");
-
         LocationTabsAdapter adapter = null;
         if (cursor != null && cursor.moveToFirst()) {
             adapter = new LocationTabsAdapter(this);

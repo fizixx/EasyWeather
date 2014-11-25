@@ -181,7 +181,7 @@ public class WundergroundParser {
                 try {
                     value = reader.nextInt();
                 } catch (java.lang.IllegalStateException e) {
-                    Log.w(LOG_TAG, "Could not read qpf value.", e);
+                    Log.w(LOG_TAG, "Could not read qpf value.");
                     reader.skipValue();
                 }
             } else {

@@ -5,17 +5,13 @@ import android.database.Cursor;
 public class LocationInfo {
 
     private long mId;
-    private String mLocation;
+    private String mQueryParam;
     private String mCityName;
-    private float mCoordLat;
-    private float mCoordLong;
 
-    public LocationInfo(long id, String location, String cityName, float coordLat, float coordLong) {
+    public LocationInfo(long id, String queryParam, String cityName) {
         mId = id;
-        mLocation = location;
+        mQueryParam = queryParam;
         mCityName = cityName;
-        mCoordLat = coordLat;
-        mCoordLong = coordLong;
     }
 
     public LocationInfo(Cursor cursor) {
@@ -26,28 +22,18 @@ public class LocationInfo {
         return mId;
     }
 
-    public String getLocation() {
-        return mLocation;
+    public String getQueryParam() {
+        return mQueryParam;
     }
 
     public String getCityName() {
         return mCityName;
     }
 
-    public float getCoordLat() {
-        return mCoordLat;
-    }
-
-    public float getCoordLong() {
-        return mCoordLong;
-    }
-
     public void loadFromCursor(Cursor cursor) {
         mId = cursor.getLong(cursor.getColumnIndex(Contract.Location._ID));
-        mLocation = cursor.getString(cursor.getColumnIndex(Contract.Location.COL_LOCATION));
+        mQueryParam = cursor.getString(cursor.getColumnIndex(Contract.Location.COL_QUERY_PARAM));
         mCityName = cursor.getString(cursor.getColumnIndex(Contract.Location.COL_CITY_NAME));
-        mCoordLat = cursor.getFloat(cursor.getColumnIndex(Contract.Location.COL_COORD_LAT));
-        mCoordLong = cursor.getFloat(cursor.getColumnIndex(Contract.Location.COL_COORD_LONG));
     }
 
 }

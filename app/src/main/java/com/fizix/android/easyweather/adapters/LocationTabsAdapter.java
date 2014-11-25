@@ -33,7 +33,7 @@ public class LocationTabsAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         LocationInfo locationInfo = mLocations.get(position);
-        return WeatherListFragment.newInstance(locationInfo.getId(), locationInfo.getLocation());
+        return WeatherListFragment.newInstance(locationInfo.getId(), locationInfo.getQueryParam());
     }
 
     @Override

@@ -73,6 +73,7 @@ public class AddCityActivity extends ActionBarActivity implements SearchView.OnQ
         String cityName = (parts.length > 1) ? parts[0] : result.getLocation();
 
         ContentValues values = new ContentValues();
+        values.put(Contract.Location.COL_QUERY_PARAM, result.getQueryParam());
         values.put(Contract.Location.COL_LOCATION, result.getLocation());
         values.put(Contract.Location.COL_CITY_NAME, cityName);
         values.put(Contract.Location.COL_COORD_LAT, result.getCoordLat());

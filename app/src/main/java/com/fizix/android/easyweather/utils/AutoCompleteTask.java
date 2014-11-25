@@ -27,11 +27,6 @@ public class AutoCompleteTask extends AsyncTask<Void, Void, List<SearchResult>> 
     private static final String LOG_TAG = AutoCompleteTask.class.getSimpleName();
 
     private String mCity;
-
-    public interface Callbacks {
-        void onTaskComplete(List<SearchResult> results);
-    }
-
     private Callbacks mCallbacks;
 
     public AutoCompleteTask(Callbacks callbacks, String city) {
@@ -112,7 +107,13 @@ public class AutoCompleteTask extends AsyncTask<Void, Void, List<SearchResult>> 
             for (int i = 0; i < cities.length(); i++) {
                 JSONObject cityObj = cities.getJSONObject(i);
 
+                String queryParam = cityObj.getString("l");
+                if (queryParam.startsWith("/q/")) {
+                    queryParam = queryParam.substring(3);
+                }
+
                 SearchResult result = new SearchResult(
+                        queryParam,
                         cityObj.getString("name"),
                         cityObj.getString("c"),
                         cityObj.getDouble("lat"),
@@ -134,6 +135,10 @@ public class AutoCompleteTask extends AsyncTask<Void, Void, List<SearchResult>> 
         super.onPostExecute(results);
 
         mCallbacks.onTaskComplete(results);
+    }
+
+    public interface Callbacks {
+        void onTaskComplete(List<SearchResult> results);
     }
 
 }

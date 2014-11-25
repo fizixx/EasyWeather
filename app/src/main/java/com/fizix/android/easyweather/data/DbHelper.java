@@ -20,11 +20,12 @@ public class DbHelper extends SQLiteOpenHelper {
         // Create a table to hold locations.
         final String SQL_CREATE_LOCATION_TABLE = "CREATE TABLE " + Contract.Location.TABLE_NAME + " (" +
                 Contract.Location._ID + " INTEGER PRIMARY KEY, " +
+                Contract.Location.COL_QUERY_PARAM + " TEXT UNIQUE NOT NULL, " +
                 Contract.Location.COL_LOCATION + " TEXT UNIQUE NOT NULL, " +
                 Contract.Location.COL_CITY_NAME + " TEXT NOT NULL, " +
                 Contract.Location.COL_COORD_LAT + " REAL NOT NULL, " +
                 Contract.Location.COL_COORD_LONG + " REAL NOT NULL, " +
-                "UNIQUE (" + Contract.Location.COL_LOCATION + ") ON CONFLICT REPLACE);";
+                "UNIQUE (" + Contract.Location.COL_QUERY_PARAM + ", " + Contract.Location.COL_LOCATION + ") ON CONFLICT REPLACE);";
 
         Log.i(LOG_TAG, "Creating locations table: " + SQL_CREATE_LOCATION_TABLE);
 

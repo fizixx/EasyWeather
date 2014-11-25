@@ -22,17 +22,17 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
 
     private Context mContext;
     private long mLocationId;
-    private String mLocation;
+    private String mQueryParam;
 
-    public FetchWeatherTask(Context context, long locationId, String location) {
+    public FetchWeatherTask(Context context, long locationId, String queryParam) {
         mContext = context;
         mLocationId = locationId;
-        mLocation = location;
+        mQueryParam = queryParam;
     }
 
     @Override
     protected Void doInBackground(Void... params) {
-        Log.i(LOG_TAG, "doInBackground: " + mLocation);
+        Log.i(LOG_TAG, "doInBackground: " + mQueryParam);
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader;
@@ -47,7 +47,7 @@ public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
                     .appendPath("f2a4fe2862596f5e")
                     .appendPath("forecast10day")
                     .appendPath("q")
-                    .appendPath(mLocation.replace(" ", "_") + ".json")
+                    .appendEncodedPath(mQueryParam + ".json")
                     .build();
 
             String uriStr = uri.toString();

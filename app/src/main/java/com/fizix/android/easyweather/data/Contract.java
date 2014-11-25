@@ -25,8 +25,16 @@ public class Contract {
 
         // Columns
 
+        // Returned from the autocomplete API for the city you selected.
+        public static final String COL_QUERY_PARAM = "query_param";
+
+        // The name of the city as it is returned from the autocomplete API.
         public static final String COL_LOCATION = "location";
+
+        // The shortened name we generate from the full location.
         public static final String COL_CITY_NAME = "city_name";
+
+        // The longitude and latitude for the location.
         public static final String COL_COORD_LAT = "lat";
         public static final String COL_COORD_LONG = "long";
 
