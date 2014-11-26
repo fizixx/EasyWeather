@@ -16,4 +16,12 @@
     <string name="enter_city_name">Enter city name</string>
     <string name="search">Search</string>
 
+    <!-- Weather descriptions -->
+    <string name="desc_unknown">Unknown</string>
+    <string name="desc_clear">Clear</string>
+    <string name="desc_partly_cloudy">Partly Cloudy</string>
+    <string name="desc_mostly_cloudy">Mostly Cloudy</string>
+    <string name="desc_cloudy">Cloudy</string>
+    <string name="desc_chance_rain">Chance of Rain</string>
+
 </resources>

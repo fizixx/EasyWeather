@@ -20,6 +20,10 @@ import com.fizix.android.easyweather.adapters.DayEntryAdapter;
 import com.fizix.android.easyweather.data.Contract;
 import com.fizix.android.easyweather.utils.FetchWeatherTask;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class WeatherListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String LOG_TAG = WeatherListFragment.class.getSimpleName();
