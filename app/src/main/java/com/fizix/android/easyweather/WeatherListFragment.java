@@ -140,8 +140,8 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
                 getActivity(),
                 Contract.DayEntry.buildDayEntryByLocationUri(mLocationId),
                 columns,
-                null,
-                null,
+                Contract.DayEntry.COL_DATE + " >= ?",
+                new String[] {Contract.DayEntry.createDateString(new Date())},
                 null
         );
     }

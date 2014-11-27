@@ -4,6 +4,9 @@ import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Contract {
 
     public static final String CONTENT_AUTHORITY = "com.fizix.android.easyweather";
@@ -93,7 +96,13 @@ public class Contract {
         public static String createDateString(int year, int month, int day) {
             return String.format("%04d%02d%02d", year, month, day);
         }
-        
+
+        // Create a date string from a Date object.
+        public static String createDateString(Date date) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            return dateFormat.format(date);
+        }
+
         public static Uri buildDayEntryByLocationUri(long locationId) {
             return CONTENT_URI.buildUpon().appendPath(String.valueOf(locationId)).build();
         }
