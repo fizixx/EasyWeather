@@ -8,14 +8,20 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
+
+import java.util.List;
 
 public class Provider extends ContentProvider {
+
+    private static final String LOG_TAG = Provider.class.getSimpleName();
 
     private static final int LOCATION = 200;
     private static final int LOCATION_ID = 201;
 
     private static final int DAY_ENTRY_DIR = 300;
     private static final int DAY_ENTRY_DIR_BY_LOCATION = 301;
+    private static final int DAY_ENTRY_DIR_BY_LOCATION_AND_START_DATE = 302;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private DbHelper mDbHelper;
@@ -29,6 +35,7 @@ public class Provider extends ContentProvider {
 
         matcher.addURI(authority, Contract.PATH_DAY_ENTRY, DAY_ENTRY_DIR);
         matcher.addURI(authority, Contract.PATH_DAY_ENTRY + "/*", DAY_ENTRY_DIR_BY_LOCATION);
+        matcher.addURI(authority, Contract.PATH_DAY_ENTRY + "/*/*", DAY_ENTRY_DIR_BY_LOCATION_AND_START_DATE);
 
         return matcher;
     }
@@ -81,6 +88,26 @@ public class Provider extends ContentProvider {
                         projection,
                         Contract.DayEntry.COL_LOCATION_ID + " = ?",
                         new String[] {locationId},
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
+
+            case DAY_ENTRY_DIR_BY_LOCATION_AND_START_DATE: {
+                // Get the locationId and the startDate from the URI.
+                List<String> segments = uri.getPathSegments();
+                String locationId = segments.get(1);
+                String startDate = segments.get(2);
+
+                Log.i(LOG_TAG, "===========================================");
+
+                retCursor = mDbHelper.getReadableDatabase().query(
+                        Contract.DayEntry.TABLE_NAME,
+                        projection,
+                        Contract.DayEntry.COL_LOCATION_ID + " = ? AND " + Contract.DayEntry.COL_DATE + " >= ?",
+                        new String[] {locationId, startDate},
                         null,
                         null,
                         sortOrder

@@ -20,8 +20,6 @@ import com.fizix.android.easyweather.adapters.DayEntryAdapter;
 import com.fizix.android.easyweather.data.Contract;
 import com.fizix.android.easyweather.utils.FetchWeatherTask;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 public class WeatherListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -138,10 +136,10 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
 
         return new CursorLoader(
                 getActivity(),
-                Contract.DayEntry.buildDayEntryByLocationUri(mLocationId),
+                Contract.DayEntry.buildDayEntryByLocationUri(mLocationId, new Date()),
                 columns,
-                Contract.DayEntry.COL_DATE + " >= ?",
-                new String[] {Contract.DayEntry.createDateString(new Date())},
+                null,
+                null,
                 null
         );
     }

@@ -106,6 +106,11 @@ public class Contract {
         public static Uri buildDayEntryByLocationUri(long locationId) {
             return CONTENT_URI.buildUpon().appendPath(String.valueOf(locationId)).build();
         }
+
+        public static Uri buildDayEntryByLocationUri(long locationId, Date startDate) {
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(locationId)).appendPath(createDateString(startDate)).build();
+        }
+
     }
 
 }
