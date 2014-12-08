@@ -4,4 +4,7 @@
     <color name="colorPrimary">#99CC00</color>
     <color name="colorPrimaryDark">#669900</color>
 
+    <color name="drawerBackground">#FFFFFF</color>
+    <color name="drawerTextColor">#999999</color>
+
 </resources>

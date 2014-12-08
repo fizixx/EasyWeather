@@ -6,51 +6,46 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
-import com.fizix.android.easyweather.adapters.LocationTabsAdapter;
 import com.fizix.android.easyweather.data.Contract;
-import com.fizix.android.easyweather.data.LocationInfo;
-import com.fizix.android.easyweather.views.SlidingTabLayout;
 
 
 public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
+
     private static final int LOADER_LOCATION = 0;
-    private SlidingTabLayout mSlidingTabs;
-    private ViewPager mViewPager;
+
     private Toolbar mToolbar;
-    private Button mAddLocationButton;
+
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        mSlidingTabs = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
-        mAddLocationButton = (Button) findViewById(R.id.add_location_button);
-        mAddLocationButton.setVisibility(View.GONE);
-        mAddLocationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, AddCityActivity.class));
-            }
-        });
-
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        //mToolbar.setOnMenuItemClickListener(this);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setIcon(R.drawable.ic_launcher);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.app_name, R.string.app_name);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        mDrawerToggle.syncState();
 
         // Set up the content loader.
         getSupportLoaderManager().initLoader(LOADER_LOCATION, null, this);
@@ -95,23 +90,6 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        LocationTabsAdapter adapter = null;
-        if (cursor != null && cursor.moveToFirst()) {
-            adapter = new LocationTabsAdapter(this);
-            do {
-                LocationInfo locationInfo = new LocationInfo(cursor);
-                Log.i(LOG_TAG, "LocationInfo: " + locationInfo.getCityName());
-                adapter.addLocationInfo(locationInfo);
-            } while (cursor.moveToNext());
-        }
-
-        mViewPager.setAdapter(adapter);
-        mViewPager.setVisibility((adapter == null) ? View.GONE : View.VISIBLE);
-
-        // We have to call this for the sliding tabs to update.
-        mSlidingTabs.setViewPager(mViewPager);
-
-        mAddLocationButton.setVisibility((adapter == null) ? View.VISIBLE : View.GONE);
     }
 
     @Override

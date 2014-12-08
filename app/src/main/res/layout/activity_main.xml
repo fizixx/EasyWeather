@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/BaseActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,31 +7,25 @@
 
     <include layout="@layout/toolbar" />
 
-    <com.fizix.android.easyweather.views.SlidingTabLayout
-        android:id="@+id/sliding_tabs"
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"/>
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/view_pager"
+        <FrameLayout
+            android:id="@+id/main_fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimaryDark" />
 
-        <Button
-            android:id="@+id/add_location_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="48dp"
-            android:text="@string/add_location" />
+        <fragment
+            android:id="@+id/main_drawer_fragment"
+            android:name="com.fizix.android.easyweather.ui.LocationDrawerFragment"
+            android:layout_width="320dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            tools:layout="@layout/fragment_location_drawer" />
 
-    </LinearLayout>
+    </android.support.v4.widget.DrawerLayout>
 
 </LinearLayout>
