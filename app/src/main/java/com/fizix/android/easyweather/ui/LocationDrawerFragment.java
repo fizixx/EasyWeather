@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.fizix.android.easyweather.R;
@@ -26,8 +27,15 @@ public class LocationDrawerFragment extends Fragment implements LoaderManager.Lo
     private ListView mLocationList;
     private LocationDrawerAdapter mAdapter;
 
+    private OnDrawerSelectedListener mListener;
+
     public LocationDrawerFragment() {
         super();
+        mListener = null;
+    }
+
+    public void setOnDrawerSelectedListener(OnDrawerSelectedListener listener) {
+        mListener = listener;
     }
 
     @Override
@@ -44,23 +52,24 @@ public class LocationDrawerFragment extends Fragment implements LoaderManager.Lo
         mAdapter = new LocationDrawerAdapter(getActivity(), null, 0);
         mLocationList.setAdapter(mAdapter);
 
+        mLocationList.setOnItemClickListener(new ListView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (mListener != null) {
+                    mListener.onDrawerSelected(id);
+                }
+            }
+        });
+
         return rootView;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        final String[] columns = new String[]{
-                Contract.Location._ID,
-                Contract.Location.COL_CITY_NAME,
-        };
-
         return new CursorLoader(
                 getActivity(),
-                Contract.Location.CONTENT_URI,
-                columns,
-                null,
-                null,
-                null
+                Contract.Location.buildLocationWithTempUri(),
+                null, null, null, null
         );
     }
 
@@ -73,4 +82,9 @@ public class LocationDrawerFragment extends Fragment implements LoaderManager.Lo
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.i(LOG_TAG, "onLoaderReset");
     }
+
+    public static interface OnDrawerSelectedListener {
+        public void onDrawerSelected(long locationId);
+    }
+
 }

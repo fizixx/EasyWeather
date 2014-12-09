@@ -23,6 +23,9 @@ public class Contract {
         public static final String CONTENT_TYPE_DIR = "vnd.android.cursor.dir/" + CONTENT_AUTHORITY + "/" + PATH_LOCATION;
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/" + CONTENT_AUTHORITY + "/" + PATH_LOCATION;
 
+        // Misc Constants
+        public static final String PATH_DRAWER = "drawer";
+
         // Table Name
         public static final String TABLE_NAME = "location";
 
@@ -43,6 +46,10 @@ public class Contract {
 
         public static Uri buildLocationUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildLocationWithTempUri() {
+            return CONTENT_URI.buildUpon().appendPath(PATH_DRAWER).build();
         }
 
     }
@@ -109,6 +116,10 @@ public class Contract {
 
         public static Uri buildDayEntryByLocationUri(long locationId, Date startDate) {
             return CONTENT_URI.buildUpon().appendPath(String.valueOf(locationId)).appendPath(createDateString(startDate)).build();
+        }
+
+        public static String longToDegrees(long degrees) {
+            return String.format("%d\u00B0", degrees);
         }
 
     }

@@ -15,8 +15,7 @@
         <FrameLayout
             android:id="@+id/main_fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorPrimaryDark" />
+            android:layout_height="match_parent" />
 
         <fragment
             android:id="@+id/main_drawer_fragment"
