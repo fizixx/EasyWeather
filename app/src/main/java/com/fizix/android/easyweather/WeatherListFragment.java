@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,7 +24,7 @@ import com.fizix.android.easyweather.utils.FetchWeatherTask;
 
 import java.util.Date;
 
-public class WeatherListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class WeatherListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String LOG_TAG = WeatherListFragment.class.getSimpleName();
 
@@ -37,6 +38,7 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
     private String mQueryParam;
 
     private ListView mDayEntryList;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     // The adapter used by the day entry list.
     DayEntryAdapter mDayEntryAdapter;
@@ -116,9 +118,7 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
-            // Start an async task to refresh the weather data for the current location.
-            FetchWeatherTask task = new FetchWeatherTask(getActivity(), mLocationId, mQueryParam);
-            task.execute();
+            refreshWeatherData();
 
             return true;
         }
@@ -126,10 +126,19 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
         return super.onOptionsItemSelected(item);
     }
 
+    private void refreshWeatherData() {
+        // Start an async task to refresh the weather data for the current location.
+        FetchWeatherTask task = new FetchWeatherTask(getActivity(), mLocationId, mQueryParam);
+        task.execute();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_weather_list, container, false);
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
 
         mDayEntryList = (ListView) rootView.findViewById(R.id.day_entry_list);
         mDayEntryAdapter = new DayEntryAdapter(getActivity(), null, 0);
@@ -175,10 +184,20 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         mDayEntryAdapter.swapCursor(cursor);
+
+        // Stop the spinner from refreshing.
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         Log.i(LOG_TAG, "onLoaderReset");
     }
+
+    @Override
+    public void onRefresh() {
+        // Called when the swipe to refresh is released and we should start refreshing.
+        refreshWeatherData();
+    }
+
 }
