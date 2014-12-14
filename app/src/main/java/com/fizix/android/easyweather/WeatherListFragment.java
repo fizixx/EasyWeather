@@ -1,6 +1,7 @@
 package com.fizix.android.easyweather;
 
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,31 +27,61 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
 
     private static final String LOG_TAG = WeatherListFragment.class.getSimpleName();
 
-    private static final String ARG_QUERY_PARAM = "location";
     private static final String ARG_LOCATION_ID = "location_id";
+    private static final String ARG_CITY_NAME = "city_name";
+    private static final String ARG_QUERY_PARAM = "query_param";
 
+    // Params
     private long mLocationId;
+    private String mCityName;
     private String mQueryParam;
+
     private ListView mDayEntryList;
 
     // The adapter used by the day entry list.
     DayEntryAdapter mDayEntryAdapter;
+
+    // The title for the fragment.
+    CharSequence mTitle;
 
     private static final int DAY_ENTRY_LOADER = 1;
 
     public WeatherListFragment() {
     }
 
-    public static WeatherListFragment newInstance(long locationId, String queryParam) {
+    public static WeatherListFragment newInstance(Context context, long locationId) {
         WeatherListFragment fragment = new WeatherListFragment();
 
-        Bundle args = new Bundle();
-        args.putLong(ARG_LOCATION_ID, locationId);
-        args.putString(ARG_QUERY_PARAM, queryParam);
+        Cursor cursor = context.getContentResolver().query(
+                Contract.Location.buildLocationUri(locationId),
+                new String[]{
+                        Contract.Location._ID,
+                        Contract.Location.COL_CITY_NAME,
+                        Contract.Location.COL_QUERY_PARAM
+                },
+                null,
+                null,
+                null
+        );
 
+        Bundle args = new Bundle();
+        if (cursor != null && cursor.moveToFirst()) {
+            CharSequence cityName = cursor.getString(cursor.getColumnIndex(Contract.Location.COL_CITY_NAME));
+
+            args.putLong(ARG_LOCATION_ID, cursor.getLong(cursor.getColumnIndex(Contract.Location._ID)));
+            args.putCharSequence(ARG_CITY_NAME, cityName);
+            args.putCharSequence(ARG_QUERY_PARAM, cursor.getString(cursor.getColumnIndex(Contract.Location.COL_QUERY_PARAM)));
+
+            // Store the title of the fragment.
+            fragment.mTitle = cityName;
+        }
         fragment.setArguments(args);
 
         return fragment;
+    }
+
+    public CharSequence getTitle() {
+        return mTitle;
     }
 
     @Override
@@ -63,9 +94,8 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
         Bundle args = getArguments();
         if (args != null) {
             mLocationId = args.getLong(ARG_LOCATION_ID);
+            mCityName = args.getString(ARG_CITY_NAME);
             mQueryParam = args.getString(ARG_QUERY_PARAM);
-
-            Log.i(LOG_TAG, "Query param: " + mQueryParam);
         }
     }
 
@@ -87,8 +117,6 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
 
         if (id == R.id.action_refresh) {
             // Start an async task to refresh the weather data for the current location.
-            Log.i(LOG_TAG, "Refreshing: " + mQueryParam);
-
             FetchWeatherTask task = new FetchWeatherTask(getActivity(), mLocationId, mQueryParam);
             task.execute();
 

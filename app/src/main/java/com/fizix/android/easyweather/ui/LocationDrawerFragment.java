@@ -69,7 +69,10 @@ public class LocationDrawerFragment extends Fragment implements LoaderManager.Lo
         return new CursorLoader(
                 getActivity(),
                 Contract.Location.buildLocationWithTempUri(),
-                null, null, null, null
+                null,
+                null,
+                null,
+                null
         );
     }
 
@@ -80,7 +83,6 @@ public class LocationDrawerFragment extends Fragment implements LoaderManager.Lo
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.i(LOG_TAG, "onLoaderReset");
     }
 
     public static interface OnDrawerSelectedListener {

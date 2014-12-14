@@ -1,11 +1,9 @@
 package com.fizix.android.easyweather;
 
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
+import android.preference.PreferenceManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -15,32 +13,28 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.fizix.android.easyweather.data.Contract;
 import com.fizix.android.easyweather.ui.LocationDrawerFragment;
 
 
-public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor>, LocationDrawerFragment.OnDrawerSelectedListener {
+public class MainActivity extends ActionBarActivity implements LocationDrawerFragment.OnDrawerSelectedListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
-
-    private static final int LOADER_LOCATION = 0;
 
     private Toolbar mToolbar;
 
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
 
-    private View mFragmentContainerView;
     private LocationDrawerFragment mDrawerFragment;
+
+    CharSequence mTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mFragmentContainerView = findViewById(R.id.main_fragment_container);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -60,8 +54,16 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
         mDrawerToggle.syncState();
 
-        // Set up the content loader.
-        getSupportLoaderManager().initLoader(LOADER_LOCATION, null, this);
+        // Get the current title from the activity.
+        mTitle = getTitle();
+
+        // Read the initial values from the preferences.
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        long selectedLocationId = prefs.getLong("pref_current_location_id", -1);
+        Log.i(LOG_TAG, "selectedLocationId: " + selectedLocationId);
+        if (selectedLocationId != -1) {
+            setCurrentLocation(selectedLocationId);
+        }
     }
 
     @Override
@@ -89,28 +91,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        Log.i(LOG_TAG, "onCreateLoader(...)");
-
-        String[] columns = {
-                Contract.Location._ID,
-                Contract.Location.COL_QUERY_PARAM,
-                Contract.Location.COL_CITY_NAME,
-        };
-
-        return new CursorLoader(this, Contract.Location.CONTENT_URI, columns, null, null, null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-    }
-
-    @Override
     public void onDrawerSelected(long locationId) {
+        // Set the new content area of the activity.
         setCurrentLocation(locationId);
 
         // A new drawer item was selected, so we close the drawer.
@@ -118,10 +100,21 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     }
 
     private void setCurrentLocation(long locationId) {
+        WeatherListFragment fragment = WeatherListFragment.newInstance(this, locationId);
+
         // Set the fragment on the fragment area.
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_fragment_container, WeatherListFragment.newInstance(locationId, ""))
+                .replace(R.id.main_fragment_container, fragment)
                 .commit();
+
+        // Update the title on the toolbar to the name of the city.
+        getSupportActionBar().setTitle(fragment.getTitle());
+
+        // Save in the preferences that we have a new "selected" location.
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.edit()
+                .putLong("pref_current_location_id", locationId)
+                .apply();
     }
 
 }
