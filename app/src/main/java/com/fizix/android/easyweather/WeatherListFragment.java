@@ -127,6 +127,9 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
     }
 
     private void refreshWeatherData() {
+        // Make sure we're showing the user that the data is loading.
+        mSwipeRefreshLayout.setRefreshing(true);
+
         // Start an async task to refresh the weather data for the current location.
         FetchWeatherTask task = new FetchWeatherTask(getActivity(), mLocationId, mQueryParam);
         task.execute();
