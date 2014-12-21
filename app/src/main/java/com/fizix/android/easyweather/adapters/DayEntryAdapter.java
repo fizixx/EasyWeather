@@ -2,7 +2,6 @@ package com.fizix.android.easyweather.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,8 +75,8 @@ public class DayEntryAdapter extends CursorAdapter {
         viewHolder.artIcon.setImageDrawable(mContext.getResources().getDrawable(iconResource));
         viewHolder.title.setText(date);
         viewHolder.description.setText(mContext.getResources().getString(descResource));
-        viewHolder.tempMax.setText(cursor.getString(cursor.getColumnIndex(Contract.DayEntry.COL_TEMP_HIGH)));
-        viewHolder.tempMin.setText(cursor.getString(cursor.getColumnIndex(Contract.DayEntry.COL_TEMP_LOW)));
+        viewHolder.tempMax.setText(Contract.DayEntry.longToDegrees(cursor.getLong(cursor.getColumnIndex(Contract.DayEntry.COL_TEMP_HIGH))));
+        viewHolder.tempMin.setText(Contract.DayEntry.longToDegrees(cursor.getLong(cursor.getColumnIndex(Contract.DayEntry.COL_TEMP_LOW))));
     }
 
     private static class ViewHolder {
