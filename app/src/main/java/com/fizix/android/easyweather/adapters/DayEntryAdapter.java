@@ -20,6 +20,9 @@ public class DayEntryAdapter extends CursorAdapter {
 
     private static final String LOG_TAG = DayEntryAdapter.class.getSimpleName();
 
+    private static final int VIEW_TYPE_TODAY = 0;
+    private static final int VIEW_TYPE_NORMAL = 1;
+
     private Context mContext;
 
     public DayEntryAdapter(Context context, Cursor c, int flags) {
@@ -28,8 +31,23 @@ public class DayEntryAdapter extends CursorAdapter {
     }
 
     @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return (position == 0) ? VIEW_TYPE_TODAY : VIEW_TYPE_NORMAL;
+    }
+
+    @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view = LayoutInflater.from(context).inflate(R.layout.weather_list_entry, parent, false);
+        final int layoutId =
+                (getItemViewType(cursor.getPosition()) == VIEW_TYPE_TODAY)
+                        ? R.layout.item_weather_list_today
+                        : R.layout.item_weather_list;
+
+        View view = LayoutInflater.from(context).inflate(layoutId, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         view.setTag(viewHolder);
         return view;

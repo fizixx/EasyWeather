@@ -7,24 +7,36 @@
 
     <include layout="@layout/toolbar" />
 
-    <android.support.v4.widget.DrawerLayout
-        android:id="@+id/drawer"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/main_fragment_container"
+        <android.support.v4.widget.DrawerLayout
+            android:id="@+id/drawer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
 
-        <fragment
-            android:id="@+id/main_drawer_fragment"
-            android:name="com.fizix.android.easyweather.ui.LocationDrawerFragment"
-            android:layout_width="320dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            tools:layout="@layout/fragment_location_drawer" />
+            <FrameLayout
+                android:id="@+id/main_fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-    </android.support.v4.widget.DrawerLayout>
+            <fragment
+                android:id="@+id/main_drawer_fragment"
+                android:name="com.fizix.android.easyweather.ui.LocationDrawerFragment"
+                android:layout_width="320dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                tools:layout="@layout/fragment_location_drawer" />
+
+        </android.support.v4.widget.DrawerLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/drop_shadow" />
+
+    </RelativeLayout>
 
 </LinearLayout>
