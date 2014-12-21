@@ -107,25 +107,6 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
         getLoaderManager().initLoader(DAY_ENTRY_LOADER, null, this);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.weather_list_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_refresh) {
-            refreshWeatherData();
-
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     private void refreshWeatherData() {
         // Make sure we're showing the user that the data is loading.
         mSwipeRefreshLayout.setRefreshing(true);

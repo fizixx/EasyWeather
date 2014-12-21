@@ -1,5 +1,6 @@
 package com.fizix.android.easyweather.ui;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,13 +8,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
+import com.fizix.android.easyweather.AddLocationActivity;
+import com.fizix.android.easyweather.MainActivity;
 import com.fizix.android.easyweather.R;
 import com.fizix.android.easyweather.adapters.LocationDrawerAdapter;
 import com.fizix.android.easyweather.data.Contract;
@@ -51,13 +54,22 @@ public class LocationDrawerFragment extends Fragment implements LoaderManager.Lo
         mLocationList = (ListView) rootView.findViewById(R.id.location_list);
         mAdapter = new LocationDrawerAdapter(getActivity(), null, 0);
         mLocationList.setAdapter(mAdapter);
-
         mLocationList.setOnItemClickListener(new ListView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (mListener != null) {
                     mListener.onDrawerSelected(id);
                 }
+            }
+        });
+
+        Button addLocationButton = (Button) rootView.findViewById(R.id.add_location);
+        addLocationButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity activity = (MainActivity) getActivity();
+                activity.startActivity(new Intent(activity, AddLocationActivity.class));
+                activity.closeDrawer();
             }
         });
 

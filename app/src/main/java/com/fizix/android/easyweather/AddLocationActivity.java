@@ -27,9 +27,9 @@ import com.fizix.android.easyweather.utils.FetchWeatherTask;
 
 import java.util.List;
 
-public class AddCityActivity extends ActionBarActivity implements AutoCompleteTask.Callbacks {
+public class AddLocationActivity extends ActionBarActivity implements AutoCompleteTask.Callbacks {
 
-    private static final String LOG_TAG = AddCityActivity.class.getSimpleName();
+    private static final String LOG_TAG = AddLocationActivity.class.getSimpleName();
 
     private ListView mCityList;
     private SearchResultAdapter mCurrentAdapter;

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -79,10 +78,6 @@ public class MainActivity extends ActionBarActivity implements LocationDrawerFra
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.action_add_city:
-                startActivity(new Intent(this, AddCityActivity.class));
-                return true;
-
             case R.id.action_clear_all:
                 getContentResolver().delete(Contract.Location.CONTENT_URI, null, null);
                 return true;
@@ -97,7 +92,7 @@ public class MainActivity extends ActionBarActivity implements LocationDrawerFra
         setCurrentLocation(locationId);
 
         // A new drawer item was selected, so we close the drawer.
-        mDrawerLayout.closeDrawer(GravityCompat.START);
+        closeDrawer();
     }
 
     private void setCurrentLocation(long locationId) {
@@ -118,4 +113,7 @@ public class MainActivity extends ActionBarActivity implements LocationDrawerFra
                 .apply();
     }
 
+    public void closeDrawer() {
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+    }
 }
