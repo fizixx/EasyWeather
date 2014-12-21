@@ -7,4 +7,6 @@
     <color name="drawerBackground">#FFFFFF</color>
     <color name="drawerTextColor">#999999</color>
 
+    <color name="todayTextColor">#FFFFFF</color>
+
 </resources>
