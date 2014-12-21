@@ -8,7 +8,6 @@ import android.util.Log;
 
 import com.fizix.android.easyweather.data.Contract;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;

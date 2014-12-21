@@ -1,59 +1,69 @@
 package com.fizix.android.easyweather;
 
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v4.view.ViewPager;
+import android.preference.PreferenceManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
-import com.fizix.android.easyweather.adapters.LocationTabsAdapter;
 import com.fizix.android.easyweather.data.Contract;
-import com.fizix.android.easyweather.data.LocationInfo;
-import com.fizix.android.easyweather.views.SlidingTabLayout;
+import com.fizix.android.easyweather.ui.LocationDrawerFragment;
 
 
-public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends ActionBarActivity implements LocationDrawerFragment.OnDrawerSelectedListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
-    private static final int LOADER_LOCATION = 0;
-    private SlidingTabLayout mSlidingTabs;
-    private ViewPager mViewPager;
+
     private Toolbar mToolbar;
-    private Button mAddLocationButton;
+
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
+
+    private LocationDrawerFragment mDrawerFragment;
+
+    CharSequence mTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        mSlidingTabs = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
-        mAddLocationButton = (Button) findViewById(R.id.add_location_button);
-        mAddLocationButton.setVisibility(View.GONE);
-        mAddLocationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, AddCityActivity.class));
-            }
-        });
-
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        //mToolbar.setOnMenuItemClickListener(this);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setIcon(R.drawable.ic_launcher);
 
-        // Set up the content loader.
-        getSupportLoaderManager().initLoader(LOADER_LOCATION, null, this);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
+
+        // Set up the drawer fragment.
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.app_name, R.string.app_name);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        // Listen for drawer item changes.
+        mDrawerFragment = (LocationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.main_drawer_fragment);
+        mDrawerFragment.setOnDrawerSelectedListener(this);
+
+        mDrawerToggle.syncState();
+
+        // Get the current title from the activity.
+        mTitle = getTitle();
+
+        // Read the initial values from the preferences.
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        long selectedLocationId = prefs.getLong("pref_current_location_id", -1);
+        Log.i(LOG_TAG, "selectedLocationId: " + selectedLocationId);
+        if (selectedLocationId != -1) {
+            setCurrentLocation(selectedLocationId);
+        }
     }
 
     @Override
@@ -68,10 +78,6 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.action_add_city:
-                startActivity(new Intent(this, AddCityActivity.class));
-                return true;
-
             case R.id.action_clear_all:
                 getContentResolver().delete(Contract.Location.CONTENT_URI, null, null);
                 return true;
@@ -81,41 +87,33 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        Log.i(LOG_TAG, "onCreateLoader(...)");
+    public void onDrawerSelected(long locationId) {
+        // Set the new content area of the activity.
+        setCurrentLocation(locationId);
 
-        String[] columns = {
-                Contract.Location._ID,
-                Contract.Location.COL_QUERY_PARAM,
-                Contract.Location.COL_CITY_NAME,
-        };
-
-        return new CursorLoader(this, Contract.Location.CONTENT_URI, columns, null, null, null);
+        // A new drawer item was selected, so we close the drawer.
+        closeDrawer();
     }
 
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        LocationTabsAdapter adapter = null;
-        if (cursor != null && cursor.moveToFirst()) {
-            adapter = new LocationTabsAdapter(this);
-            do {
-                LocationInfo locationInfo = new LocationInfo(cursor);
-                Log.i(LOG_TAG, "LocationInfo: " + locationInfo.getCityName());
-                adapter.addLocationInfo(locationInfo);
-            } while (cursor.moveToNext());
-        }
+    private void setCurrentLocation(long locationId) {
+        WeatherListFragment fragment = WeatherListFragment.newInstance(this, locationId);
 
-        mViewPager.setAdapter(adapter);
-        mViewPager.setVisibility((adapter == null) ? View.GONE : View.VISIBLE);
+        // Set the fragment on the fragment area.
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, fragment)
+                .commit();
 
-        // We have to call this for the sliding tabs to update.
-        mSlidingTabs.setViewPager(mViewPager);
+        // Update the title on the toolbar to the name of the city.
+        getSupportActionBar().setTitle(fragment.getTitle());
 
-        mAddLocationButton.setVisibility((adapter == null) ? View.VISIBLE : View.GONE);
+        // Save in the preferences that we have a new "selected" location.
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.edit()
+                .putLong("pref_current_location_id", locationId)
+                .apply();
     }
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+    public void closeDrawer() {
+        mDrawerLayout.closeDrawer(GravityCompat.START);
     }
-
 }

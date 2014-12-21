@@ -7,9 +7,10 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 
+import java.util.Date;
 import java.util.List;
 
 public class Provider extends ContentProvider {
@@ -18,6 +19,7 @@ public class Provider extends ContentProvider {
 
     private static final int LOCATION = 200;
     private static final int LOCATION_ID = 201;
+    private static final int LOCATION_WITH_TEMP = 202;
 
     private static final int DAY_ENTRY_DIR = 300;
     private static final int DAY_ENTRY_DIR_BY_LOCATION = 301;
@@ -32,6 +34,7 @@ public class Provider extends ContentProvider {
 
         matcher.addURI(authority, Contract.PATH_LOCATION, LOCATION);
         matcher.addURI(authority, Contract.PATH_LOCATION + "/#", LOCATION_ID);
+        matcher.addURI(authority, Contract.PATH_LOCATION + "/" + Contract.Location.PATH_DRAWER, LOCATION_WITH_TEMP);
 
         matcher.addURI(authority, Contract.PATH_DAY_ENTRY, DAY_ENTRY_DIR);
         matcher.addURI(authority, Contract.PATH_DAY_ENTRY + "/*", DAY_ENTRY_DIR_BY_LOCATION);
@@ -76,7 +79,39 @@ public class Provider extends ContentProvider {
                         sortOrder
                 );
                 break;
+            }
 
+            case LOCATION_WITH_TEMP: {
+                SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+                builder.setTables(
+                        Contract.Location.TABLE_NAME + " LEFT JOIN " +
+                                Contract.DayEntry.TABLE_NAME + " ON " +
+                                Contract.Location.TABLE_NAME + "." + Contract.Location._ID + " = " +
+                                Contract.DayEntry.TABLE_NAME + "." + Contract.DayEntry.COL_LOCATION_ID
+                );
+
+                retCursor = builder.query(mDbHelper.getReadableDatabase(),
+                        new String[]{
+                                Contract.Location.TABLE_NAME + "." + Contract.Location._ID,
+                                Contract.Location.TABLE_NAME + "." + Contract.Location.COL_CITY_NAME,
+                                Contract.DayEntry.TABLE_NAME + "." + Contract.DayEntry.COL_TEMP_HIGH,
+                                Contract.DayEntry.TABLE_NAME + "." + Contract.DayEntry.COL_ICON,
+                        },
+                        Contract.DayEntry.TABLE_NAME + "." + Contract.DayEntry.COL_DATE + " = ?",
+                        new String[]{
+                                Contract.DayEntry.createDateString(new Date())
+                        },
+                        null,
+                        null,
+                        sortOrder
+                );
+
+                // We have to listen for changes on both tables.
+                retCursor.setNotificationUri(getContext().getContentResolver(), Contract.Location.CONTENT_URI);
+                retCursor.setNotificationUri(getContext().getContentResolver(), Contract.DayEntry.CONTENT_URI);
+
+                // We return here, because we don't want to add the default notification uri.
+                return retCursor;
             }
 
             case DAY_ENTRY_DIR_BY_LOCATION: {
@@ -87,7 +122,7 @@ public class Provider extends ContentProvider {
                         Contract.DayEntry.TABLE_NAME,
                         projection,
                         Contract.DayEntry.COL_LOCATION_ID + " = ?",
-                        new String[] {locationId},
+                        new String[]{locationId},
                         null,
                         null,
                         sortOrder
@@ -101,13 +136,11 @@ public class Provider extends ContentProvider {
                 String locationId = segments.get(1);
                 String startDate = segments.get(2);
 
-                Log.i(LOG_TAG, "===========================================");
-
                 retCursor = mDbHelper.getReadableDatabase().query(
                         Contract.DayEntry.TABLE_NAME,
                         projection,
                         Contract.DayEntry.COL_LOCATION_ID + " = ? AND " + Contract.DayEntry.COL_DATE + " >= ?",
-                        new String[] {locationId, startDate},
+                        new String[]{locationId, startDate},
                         null,
                         null,
                         sortOrder
