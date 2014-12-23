@@ -20,6 +20,7 @@ public class Provider extends ContentProvider {
     private static final int LOCATION = 200;
     private static final int LOCATION_ID = 201;
     private static final int LOCATION_WITH_TEMP = 202;
+    private static final int LOCATION_WIDGET = 203;
 
     private static final int DAY_ENTRY_DIR = 300;
     private static final int DAY_ENTRY_DIR_BY_LOCATION = 301;
@@ -35,6 +36,7 @@ public class Provider extends ContentProvider {
         matcher.addURI(authority, Contract.PATH_LOCATION, LOCATION);
         matcher.addURI(authority, Contract.PATH_LOCATION + "/#", LOCATION_ID);
         matcher.addURI(authority, Contract.PATH_LOCATION + "/" + Contract.Location.PATH_DRAWER, LOCATION_WITH_TEMP);
+        matcher.addURI(authority, Contract.PATH_LOCATION + "/" + Contract.Location.PATH_WIDGET + "/#", LOCATION_WIDGET);
 
         matcher.addURI(authority, Contract.PATH_DAY_ENTRY, DAY_ENTRY_DIR);
         matcher.addURI(authority, Contract.PATH_DAY_ENTRY + "/*", DAY_ENTRY_DIR_BY_LOCATION);
@@ -114,6 +116,42 @@ public class Provider extends ContentProvider {
                 return retCursor;
             }
 
+            case LOCATION_WIDGET: {
+                final long locationId = ContentUris.parseId(uri);
+
+                SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+                builder.setTables(
+                        Contract.Location.TABLE_NAME + " LEFT JOIN " +
+                                Contract.DayEntry.TABLE_NAME + " ON " +
+                                Contract.Location.TABLE_NAME + "." + Contract.Location._ID + " = " +
+                                Contract.DayEntry.TABLE_NAME + "." + Contract.DayEntry.COL_LOCATION_ID
+                );
+
+                retCursor = builder.query(mDbHelper.getReadableDatabase(),
+                        new String[]{
+                                Contract.Location.TABLE_NAME + "." + Contract.Location._ID,
+                                Contract.Location.TABLE_NAME + "." + Contract.Location.COL_CITY_NAME,
+                                Contract.DayEntry.TABLE_NAME + "." + Contract.DayEntry.COL_TEMP_HIGH,
+                                Contract.DayEntry.TABLE_NAME + "." + Contract.DayEntry.COL_ICON,
+                        },
+                        Contract.Location.TABLE_NAME + "." + Contract.Location._ID + " = ? AND " +
+                                Contract.DayEntry.TABLE_NAME + "." + Contract.DayEntry.COL_DATE + " = ?",
+                        new String[]{
+                                String.valueOf(locationId),
+                                Contract.DayEntry.createDateString(new Date())
+                        },
+                        null,
+                        null,
+                        sortOrder
+                );
+
+                // We have to listen for changes on both tables.
+                retCursor.setNotificationUri(getContext().getContentResolver(), Contract.Location.CONTENT_URI);
+                retCursor.setNotificationUri(getContext().getContentResolver(), Contract.DayEntry.CONTENT_URI);
+
+                return retCursor;
+            }
+
             case DAY_ENTRY_DIR_BY_LOCATION: {
                 // Get the location_id from the URI.
                 String locationId = uri.getPathSegments().get(1);
@@ -167,6 +205,9 @@ public class Provider extends ContentProvider {
                 return Contract.Location.CONTENT_TYPE_DIR;
 
             case LOCATION_ID:
+                return Contract.Location.CONTENT_ITEM_TYPE;
+
+            case LOCATION_WIDGET:
                 return Contract.Location.CONTENT_ITEM_TYPE;
 
             case DAY_ENTRY_DIR:

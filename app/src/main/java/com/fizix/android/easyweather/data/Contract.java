@@ -4,6 +4,8 @@ import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import com.fizix.android.easyweather.R;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -25,6 +27,7 @@ public class Contract {
 
         // Misc Constants
         public static final String PATH_DRAWER = "drawer";
+        public static final String PATH_WIDGET = "widget";
 
         // Table Name
         public static final String TABLE_NAME = "location";
@@ -50,6 +53,10 @@ public class Contract {
 
         public static Uri buildLocationWithTempUri() {
             return CONTENT_URI.buildUpon().appendPath(PATH_DRAWER).build();
+        }
+
+        public static Uri buildLocationWidgetUri(long locationId) {
+            return CONTENT_URI.buildUpon().appendPath(PATH_WIDGET).appendPath(String.valueOf(locationId)).build();
         }
 
     }
@@ -120,6 +127,22 @@ public class Contract {
 
         public static String longToDegrees(long degrees) {
             return String.format("%d\u00B0", degrees);
+        }
+
+        public static int iconResource(String iconName) {
+            int iconResource = R.drawable.circle_clear;
+            if (iconName.equals("clear")) {
+                iconResource = R.drawable.art_clear;
+            } else if (iconName.equals("partlycloudy")) {
+                iconResource = R.drawable.art_cloudy;
+            } else if (iconName.equals("mostlycloudy")) {
+                iconResource = R.drawable.art_cloudy;
+            } else if (iconName.equals("cloudy")) {
+                iconResource = R.drawable.art_overcast;
+            } else if (iconName.equals("chancerain")) {
+                iconResource = R.drawable.art_rain;
+            }
+            return iconResource;
         }
 
     }
