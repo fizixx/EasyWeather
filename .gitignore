@@ -1,16 +1,21 @@
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
+
+# General Files
+
 .DS_Store
 
 # Gradle files
+
 .gradle/
 .gradletasknamecache
 build/
 
-###IntelliJ###
+# IntelliJ
 
 *.iml
 *.ipr
 *.iws
 .idea/
+
+# Android Studio
+
+local.properties
