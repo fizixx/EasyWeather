@@ -10,6 +10,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_refresh"
+        android:title="@string/action_refresh"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_clear_all"
         android:title="@string/action_clear_all_data"
         app:showAsAction="never" />

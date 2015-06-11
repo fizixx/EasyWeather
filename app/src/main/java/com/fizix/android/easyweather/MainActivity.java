@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import com.fizix.android.easyweather.data.Contract;
 import com.fizix.android.easyweather.ui.LocationDrawerFragment;
+import com.fizix.android.easyweather.utils.SyncUtils;
 
 
 public class MainActivity extends ActionBarActivity implements LocationDrawerFragment.OnDrawerSelectedListener {
@@ -34,6 +35,9 @@ public class MainActivity extends ActionBarActivity implements LocationDrawerFra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Make sure the sync account is created and set up.
+        SyncUtils.createSyncAccount(this);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -79,6 +83,10 @@ public class MainActivity extends ActionBarActivity implements LocationDrawerFra
         switch (id) {
             case R.id.action_clear_all:
                 getContentResolver().delete(Contract.Location.CONTENT_URI, null, null);
+                return true;
+
+            case R.id.action_refresh:
+                SyncUtils.syncAllNow(this);
                 return true;
         }
 
