@@ -12,21 +12,22 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.fizix.android.easyweather.R;
+
 
 public class GenericAccountService extends Service {
 
     private static final String LOG_TAG = GenericAccountService.class.getSimpleName();
 
     private static final String ACCOUNT_TYPE = "com.fizix.android.easyweather";
-    private static final String ACCOUNT_NAME = "sync";
 
     private Authenticator mAuthenticator;
 
-    public static Account getAccount() {
+    public static Account getAccount(Context context) {
         // Note: Normally the account name is set to the user's identity (username or email
         // address). However, since we aren't actually using any user accounts, it makes more sense
         // to use a generic string in this case.
-        final String accountName = ACCOUNT_NAME;
+        final String accountName = context.getString(R.string.app_name);
         return new Account(accountName, ACCOUNT_TYPE);
     }
 
