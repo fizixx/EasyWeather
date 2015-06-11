@@ -19,3 +19,8 @@ build/
 # Android Studio
 
 local.properties
+
+# Build files
+
+/app/*.apk
+/app/manifest*.txt
