@@ -1,4 +1,4 @@
-package com.fizix.android.easyweather;
+package com.fizix.android.easyweather.utils.sync;
 
 
 import android.accounts.Account;
@@ -12,7 +12,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.provider.Contacts;
 import android.util.Log;
 
 import com.fizix.android.easyweather.data.Contract;
@@ -23,7 +22,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 

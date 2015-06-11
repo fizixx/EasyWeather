@@ -1,4 +1,4 @@
-package com.fizix.android.easyweather;
+package com.fizix.android.easyweather.utils.sync;
 
 import android.app.Service;
 import android.content.Intent;

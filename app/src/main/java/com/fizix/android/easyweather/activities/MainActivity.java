@@ -1,4 +1,4 @@
-package com.fizix.android.easyweather;
+package com.fizix.android.easyweather.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,9 +13,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.fizix.android.easyweather.R;
 import com.fizix.android.easyweather.data.Contract;
+import com.fizix.android.easyweather.fragments.WeatherListFragment;
 import com.fizix.android.easyweather.ui.LocationDrawerFragment;
-import com.fizix.android.easyweather.utils.SyncUtils;
+import com.fizix.android.easyweather.utils.sync.SyncUtils;
 
 
 public class MainActivity extends ActionBarActivity implements LocationDrawerFragment.OnDrawerSelectedListener {

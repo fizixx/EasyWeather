@@ -1,4 +1,4 @@
-package com.fizix.android.easyweather;
+package com.fizix.android.easyweather.activities;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -19,11 +19,12 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.fizix.android.easyweather.R;
 import com.fizix.android.easyweather.adapters.SearchResultAdapter;
 import com.fizix.android.easyweather.data.Contract;
 import com.fizix.android.easyweather.models.SearchResult;
 import com.fizix.android.easyweather.utils.AutoCompleteTask;
-import com.fizix.android.easyweather.utils.SyncUtils;
+import com.fizix.android.easyweather.utils.sync.SyncUtils;
 
 import java.util.List;
 

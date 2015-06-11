@@ -15,8 +15,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.fizix.android.easyweather.AddLocationActivity;
-import com.fizix.android.easyweather.MainActivity;
+import com.fizix.android.easyweather.activities.AddLocationActivity;
+import com.fizix.android.easyweather.activities.MainActivity;
 import com.fizix.android.easyweather.R;
 import com.fizix.android.easyweather.adapters.LocationDrawerAdapter;
 import com.fizix.android.easyweather.data.Contract;

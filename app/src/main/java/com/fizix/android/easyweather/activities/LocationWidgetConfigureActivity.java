@@ -1,4 +1,4 @@
-package com.fizix.android.easyweather;
+package com.fizix.android.easyweather.activities;
 
 
 
@@ -16,13 +16,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.fizix.android.easyweather.widgets.LocationWidget;
+import com.fizix.android.easyweather.R;
 import com.fizix.android.easyweather.adapters.LocationDrawerAdapter;
 import com.fizix.android.easyweather.data.Contract;
 
 
 public class LocationWidgetConfigureActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final String PREFS_NAME = "com.fizix.android.easyweather.LocationWidget";
+    private static final String PREFS_NAME = "com.fizix.android.easyweather.widgets.LocationWidget";
     private static final String PREF_PREFIX_KEY = "widget_location_id_";
 
     private static final int LOADER_LOCATION_LIST = 0;
@@ -103,13 +105,13 @@ public class LocationWidgetConfigureActivity extends ActionBarActivity implement
 
     // Read the prefix from the SharedPreferences object for this widget.
     // If there is no preference saved, get the default from a resource
-    static long loadLocationIdPref(Context context, int appWidgetId) {
+    public static long loadLocationIdPref(Context context, int appWidgetId) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
         long locationId = prefs.getLong(PREF_PREFIX_KEY + appWidgetId, 0);
         return locationId;
     }
 
-    static void deleteLocationIdPref(Context context, int appWidgetId) {
+    public static void deleteLocationIdPref(Context context, int appWidgetId) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.remove(PREF_PREFIX_KEY + appWidgetId);
         prefs.commit();

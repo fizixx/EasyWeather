@@ -1,4 +1,4 @@
-package com.fizix.android.easyweather;
+package com.fizix.android.easyweather.fragments;
 
 
 import android.content.Context;
@@ -14,9 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.fizix.android.easyweather.R;
 import com.fizix.android.easyweather.adapters.DayEntryAdapter;
 import com.fizix.android.easyweather.data.Contract;
-import com.fizix.android.easyweather.utils.SyncUtils;
+import com.fizix.android.easyweather.utils.sync.SyncUtils;
 
 import java.util.Date;
 

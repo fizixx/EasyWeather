@@ -1,4 +1,4 @@
-package com.fizix.android.easyweather.utils;
+package com.fizix.android.easyweather.utils.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -7,7 +7,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
-import com.fizix.android.easyweather.SyncAdapter;
 import com.fizix.android.easyweather.accounts.GenericAccountService;
 import com.fizix.android.easyweather.data.Contract;
 

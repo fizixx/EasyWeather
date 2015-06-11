@@ -22,7 +22,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,14 +31,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AddLocationActivity"
+            android:name=".activities.AddLocationActivity"
             android:label="@string/add_location"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".activities.MainActivity" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".activities.MainActivity" />
         </activity>
 
         <provider
@@ -47,7 +47,7 @@
             android:exported="false"
             android:syncable="true" />
 
-        <receiver android:name=".LocationWidget" >
+        <receiver android:name=".widgets.LocationWidget" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -57,7 +57,7 @@
                 android:resource="@xml/location_widget_info" />
         </receiver>
 
-        <activity android:name=".LocationWidgetConfigureActivity" >
+        <activity android:name=".activities.LocationWidgetConfigureActivity" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -65,7 +65,7 @@
 
         <!-- This service implements our SyncAdapter.  It needs to be exported, so that the system
              sync framework can access it. -->
-        <service android:name=".SyncService" android:exported="true">
+        <service android:name=".utils.sync.SyncService" android:exported="true">
             <!-- This intent filter is required. It allows the system to launch our sync service
                  as needed. -->
             <intent-filter>

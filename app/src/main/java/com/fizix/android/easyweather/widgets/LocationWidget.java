@@ -1,4 +1,4 @@
-package com.fizix.android.easyweather;
+package com.fizix.android.easyweather.widgets;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.fizix.android.easyweather.R;
+import com.fizix.android.easyweather.activities.LocationWidgetConfigureActivity;
 import com.fizix.android.easyweather.data.Contract;
 
 
@@ -42,7 +44,7 @@ public class LocationWidget extends AppWidgetProvider {
         // Enter relevant functionality for when the last widget is disabled
     }
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
+    public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         // If the widget id is 0, then it means its the widget that is being placed and not an active widget.
         if (appWidgetId == 0) {
             return;
