@@ -9,18 +9,14 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.fizix.android.easyweather.adapters.DayEntryAdapter;
 import com.fizix.android.easyweather.data.Contract;
-import com.fizix.android.easyweather.utils.FetchWeatherTask;
+import com.fizix.android.easyweather.utils.SyncUtils;
 
 import java.util.Date;
 
@@ -107,15 +103,6 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
         getLoaderManager().initLoader(DAY_ENTRY_LOADER, null, this);
     }
 
-    private void refreshWeatherData() {
-        // Make sure we're showing the user that the data is loading.
-        mSwipeRefreshLayout.setRefreshing(true);
-
-        // Start an async task to refresh the weather data for the current location.
-        FetchWeatherTask task = new FetchWeatherTask(getActivity(), mLocationId, mQueryParam);
-        task.execute();
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -175,13 +162,16 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-        Log.i(LOG_TAG, "onLoaderReset");
     }
 
+    // Called when the swipe to refresh is released and we should start refreshing.
     @Override
     public void onRefresh() {
-        // Called when the swipe to refresh is released and we should start refreshing.
-        refreshWeatherData();
+        // Make sure we're showing the user that the data is loading.
+        mSwipeRefreshLayout.setRefreshing(true);
+
+        // Sync the current location only.
+        SyncUtils.syncLocationNow(getActivity(), mLocationId);
     }
 
 }

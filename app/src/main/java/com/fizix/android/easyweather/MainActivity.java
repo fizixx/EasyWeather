@@ -86,7 +86,7 @@ public class MainActivity extends ActionBarActivity implements LocationDrawerFra
                 return true;
 
             case R.id.action_refresh:
-                SyncUtils.syncNow(this);
+                SyncUtils.syncAllNow(this);
                 return true;
         }
 

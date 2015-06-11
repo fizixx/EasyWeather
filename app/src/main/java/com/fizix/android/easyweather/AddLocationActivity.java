@@ -23,7 +23,7 @@ import com.fizix.android.easyweather.adapters.SearchResultAdapter;
 import com.fizix.android.easyweather.data.Contract;
 import com.fizix.android.easyweather.models.SearchResult;
 import com.fizix.android.easyweather.utils.AutoCompleteTask;
-import com.fizix.android.easyweather.utils.FetchWeatherTask;
+import com.fizix.android.easyweather.utils.SyncUtils;
 
 import java.util.List;
 
@@ -124,14 +124,15 @@ public class AddLocationActivity extends ActionBarActivity implements AutoComple
             Uri resultUri = getContentResolver().insert(Contract.Location.CONTENT_URI, values);
             // Get the locationId from the uri.
             newLocationId = ContentUris.parseId(resultUri);
-            Log.i(LOG_TAG, String.valueOf(newLocationId));
         } catch (Exception e) {
             Log.e(LOG_TAG, "Could not insert location.", e);
+            e.printStackTrace();
         }
 
         // Start off the task to update the weather for the newly added location.
-        if (newLocationId >= 0)
-            new FetchWeatherTask(this, newLocationId, result.getQueryParam()).execute();
+        if (newLocationId >= 0) {
+            SyncUtils.syncLocationNow(this, newLocationId);
+        }
 
         finish();
     }

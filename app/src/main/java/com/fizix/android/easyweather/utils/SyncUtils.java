@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
+import com.fizix.android.easyweather.SyncAdapter;
 import com.fizix.android.easyweather.accounts.GenericAccountService;
 import com.fizix.android.easyweather.data.Contract;
 
@@ -48,7 +49,7 @@ public class SyncUtils {
         // has been deleted.  (Not that it's possible to clear app data WITHOUT affecting the
         // account list, so we need to check both.
         if (newAccount || !setupComplete) {
-            syncNow(context);
+            syncAllNow(context);
             PreferenceManager.getDefaultSharedPreferences(context)
                     .edit()
                     .putBoolean(PREF_SETUP_COMPLETE, true)
@@ -56,15 +57,25 @@ public class SyncUtils {
         }
     }
 
-    // Helper method to trigger an immediate sync.
-    public static void syncNow(Context context) {
-        Bundle b = new Bundle();
+    private static void syncInternal(Context context, Bundle bundle) {
+        bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 
-        // Disable sync backoff and ignore sync preferences.  (Force the sync)
-        b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-        b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         ContentResolver.requestSync(
-                GenericAccountService.getAccount(context), Contract.CONTENT_AUTHORITY, b);
+                GenericAccountService.getAccount(context), Contract.CONTENT_AUTHORITY, bundle);
+    }
+
+    // Helper method to trigger an immediate sync of all locations.
+    public static void syncAllNow(Context context) {
+        Bundle bundle = new Bundle();
+        syncInternal(context, bundle);
+    }
+
+    // Helper method to trigger an immediate sync of the specified location.
+    public static void syncLocationNow(Context context, long locationId) {
+        Bundle bundle = new Bundle();
+        bundle.putLong(SyncAdapter.KEY_LOCATION_ID, locationId);
+        syncInternal(context, bundle);
     }
 
 }
