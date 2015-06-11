@@ -10,7 +10,7 @@ import android.preference.PreferenceManager;
 import com.fizix.android.easyweather.accounts.GenericAccountService;
 import com.fizix.android.easyweather.data.Contract;
 
-public class AccountUtils {
+public class SyncUtils {
 
     // The frequency we want to sync at.
     private static final long SYNC_FREQUENCY = 3 * 60 * 60;
